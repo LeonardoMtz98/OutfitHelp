@@ -4,10 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:background="@drawable/fondo"
     android:orientation="vertical"
     tools:context="com.app.oh.outfithelp.Vistas.SignIn" >
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/fondo"
+        android:scaleType="centerCrop"/>
     <ImageView
         android:layout_width = "match_parent"
         android:layout_height="match_parent"
@@ -48,6 +52,7 @@
                 android:hint="Correo Electronico"
                 android:textColor="@android:color/black"
                 android:textColorHint="@android:color/black"
+                android:alpha=".50"
                 />
             <EditText
                 android:id="@+id/ETContraseña"
@@ -56,6 +61,7 @@
                 android:hint="Contraseña"
                 android:textColor="@android:color/black"
                 android:textColorHint="@android:color/black"
+                android:alpha=".50"
                 android:gravity="bottom"/>
             <EditText
                 android:id="@+id/ETConfirmarContraseña"
@@ -64,11 +70,13 @@
                 android:hint="Confirmar Contraseña"
                 android:textColor="@android:color/black"
                 android:textColorHint="@android:color/black"
+                android:alpha=".50"
                 android:gravity="bottom"/>
             <RadioGroup
                 android:id="@+id/RadioGroupGenero"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
                 android:orientation="horizontal">
                 <RadioButton
                     android:layout_width="wrap_content"
