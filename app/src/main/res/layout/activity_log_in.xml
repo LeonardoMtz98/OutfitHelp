@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:background="@drawable/fondo"
+    tools:context="com.app.oh.outfithelp.Vistas.LogIn">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="false"
+        android:alpha=".50"
+        android:clickable="false"
+        android:src="@color/colorPrimary"
+        />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="100dp">
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="1"
+                android:text="OutfitHelp"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="70sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="bottom|center_horizontal"
+            android:layout_gravity="bottom">
+            <EditText
+                android:id="@+id/ETCorreoElectronico"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Correo Electronico"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/black"
+                />
+            <EditText
+                android:id="@+id/ETContraseña"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Contraseña"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/black"
+                android:gravity="bottom"/>
+
+            <Button
+                android:id="@+id/BTIniciarSesion"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@color/colorPrimary"
+                android:text="Iniciar Sesion"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="25dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No tienes cuenta?"
+                    android:textSize="20dp"
+                    android:textColor="@android:color/black"
+                    />
+                <TextView
+                    android:id="@+id/TVRegistrate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Registrate"
+                    android:textSize="25dp"
+                    android:textColor="@android:color/holo_blue_dark"/>
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+</FrameLayout>
