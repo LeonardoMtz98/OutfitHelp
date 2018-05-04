@@ -20,9 +20,18 @@ public class SplashScreen extends Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent miIntent = new Intent(SplashScreen.this, LogIn.class);
-                startActivity(miIntent);
-                SplashScreen.this.finish();
+                if (PreferencesConfig.getInstancia(SplashScreen.this).getFromSharedPrefs("secret").equals("NULL"))
+                {
+                    Intent miIntent = new Intent(SplashScreen.this, LogIn.class);
+                    startActivity(miIntent);
+                    SplashScreen.this.finish();
+                }
+                else
+                {
+                    Intent miIntent = new Intent(SplashScreen.this, OutfitHelp.class);
+                    startActivity(miIntent);
+                    SplashScreen.this.finish();
+                }
             }
         },4000);
     }

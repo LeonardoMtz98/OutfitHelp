@@ -55,6 +55,7 @@
                 android:textColor="@android:color/black"
                 android:textColorHint="@android:color/black"
                 android:alpha=".50"
+                android:singleLine="true"
                 />
             <EditText
                 android:id="@+id/ETContraseña"
@@ -64,7 +65,9 @@
                 android:textColor="@android:color/black"
                 android:textColorHint="@android:color/black"
                 android:alpha=".50"
-                android:gravity="bottom"/>
+                android:gravity="bottom"
+                android:singleLine="true"
+                />
 
             <Button
                 android:id="@+id/BTIniciarSesion"
@@ -75,7 +78,13 @@
                 android:text="Iniciar Sesion"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
-                android:textSize="25dp" />
+                android:textSize="25sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/TVInfo"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="15sp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
