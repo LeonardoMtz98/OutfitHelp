@@ -107,7 +107,6 @@ public class LogIn extends Activity {
             Intent miIntent = new Intent(this, OutfitHelp.class);
             startActivity(miIntent);
             LogIn.this.finish();
-            //Hola bebe guapopopopotototototaaaa
         }
     }
 }
