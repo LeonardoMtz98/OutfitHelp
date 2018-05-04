@@ -3,7 +3,10 @@ package com.app.oh.outfithelp.Utilidades;
 import android.content.Context;
 
 /**
- * Created by Usuario on 02/05/2018.
+ * Esta clase contiene el metodo para instanciar un objeto que vivira a lo largo del ciclo de vida de la
+ * aplicacion y el metodo para codificar parametros segun el estandar del servidor, de manera que este
+ * pueda decodificar correctamente la informacion
+ * Created by Grecia on 02/05/2018.
  */
 
 public class Secret {
@@ -15,6 +18,11 @@ public class Secret {
         miContext = c;
     }
 
+    /**
+     * Obtiene la instancia de la clase o la genera si no existe.
+     * @param c el contexto que llama a la funcion
+     * @return la instancia de la clase que existe o se acaba de generar
+     */
     public static synchronized Secret getInstancia(Context c) {
         if (miInstancia == null) {
             miInstancia = new Secret(c);
@@ -22,6 +30,12 @@ public class Secret {
         return miInstancia;
     }
 
+    /**
+     * Codifica dos parametros
+     * @param user primer parametro a codificar
+     * @param pass segundo parametro a codificar
+     * @return String de los dos parametros codificados
+     */
     public String code(String user, String pass)
     {
         user = user.trim();
