@@ -1,5 +1,7 @@
 package com.app.oh.outfithelp.Vistas;
 
+import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,7 +18,9 @@ import android.view.MenuItem;
 import com.app.oh.outfithelp.R;
 
 public class OutfitHelp extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, Inicio.OnFragmentInteractionListener
+        , MiArmario.OnFragmentInteractionListener, Comunidad.OnFragmentInteractionListener,
+        MisPeticiones.OnFragmentInteractionListener, Favoritos.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +44,13 @@ public class OutfitHelp extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        Fragment mifragment = new Inicio();
+        getSupportFragmentManager().beginTransaction().add(R.id.content_outfit_help ,mifragment).commit();
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
     }
 
     @Override
@@ -81,23 +90,40 @@ public class OutfitHelp extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        Fragment mifragment = null;
+        boolean seleccion = false;
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_inicio) {
+            mifragment = new Inicio();
+            seleccion = true;
+        } else if (id == R.id.nav_favoritos) {
+            mifragment = new Favoritos();
+            seleccion = true;
+        } else if (id == R.id.nav_configuraciones) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_cerrar) {
 
-        } else if (id == R.id.nav_manage) {
+        }
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (seleccion)
+        {
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_outfit_help, mifragment).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+    /*@Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (Utilidades.rotacion==0)
+        {
+            appBar.removeView(tabLayout);
+        }
+    }*/
 }

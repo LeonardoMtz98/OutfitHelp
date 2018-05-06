@@ -20,7 +20,7 @@ public class SplashScreen extends Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (PreferencesConfig.getInstancia(SplashScreen.this).getFromSharedPrefs("secret").equals("NULL"))
+                if (PreferencesConfig.getInstancia(SplashScreen.this).getFromSharedPrefs("Secret").equals("NULL"))
                 {
                     Intent miIntent = new Intent(SplashScreen.this, LogIn.class);
                     startActivity(miIntent);
