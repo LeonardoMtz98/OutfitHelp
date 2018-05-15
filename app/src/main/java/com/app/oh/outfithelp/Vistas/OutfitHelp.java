@@ -1,5 +1,6 @@
 package com.app.oh.outfithelp.Vistas;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -14,19 +15,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.app.oh.outfithelp.R;
+import com.app.oh.outfithelp.Utilidades.PreferencesConfig;
 
 public class OutfitHelp extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, Inicio.OnFragmentInteractionListener
         , MiArmario.OnFragmentInteractionListener, Comunidad.OnFragmentInteractionListener,
-        MisPeticiones.OnFragmentInteractionListener, Favoritos.OnFragmentInteractionListener {
+        MisPeticiones.OnFragmentInteractionListener, Favoritos.OnFragmentInteractionListener,
+        MostrarRopa.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_outfit_help);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        TextView TVEmail = findViewById(R.id.TVEmail);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -43,13 +48,20 @@ public class OutfitHelp extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
+        if (PreferencesConfig.getInstancia(this).getFromSharedPrefs("Secret").equals("NULL"))
+        {
+            Intent miIntent = new Intent(this, LogIn.class);
+            startActivity(miIntent);
+            OutfitHelp.this.finish();
+        }
         Fragment mifragment = new Inicio();
         getSupportFragmentManager().beginTransaction().add(R.id.content_outfit_help ,mifragment).commit();
 
+
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        //TVEmail.setText(PreferencesConfig.getInstancia(this).getFromSharedPrefs("Correo"));
 
     }
 
@@ -102,7 +114,15 @@ public class OutfitHelp extends AppCompatActivity
         } else if (id == R.id.nav_configuraciones) {
 
         } else if (id == R.id.nav_cerrar) {
+            //mifragment = new CerrarSesion();
+            //getSupportFragmentManager().beginTransaction().add(R.id.content_outfit_help, mifragment).commit();
+            CerrarSesion cerrar = new CerrarSesion(this);
+            //boolean end = cerrar.createDialog();
+            if (cerrar.createDialog() == true)
+            {
 
+                OutfitHelp.this.finish();
+            }
         }
 
         if (seleccion)
@@ -118,12 +138,4 @@ public class OutfitHelp extends AppCompatActivity
     public void onFragmentInteraction(Uri uri) {
 
     }
-    /*@Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (Utilidades.rotacion==0)
-        {
-            appBar.removeView(tabLayout);
-        }
-    }*/
 }

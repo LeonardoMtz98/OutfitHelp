@@ -7,47 +7,28 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.app.oh.outfithelp.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MiArmario.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MiArmario#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class MiArmario extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    public static final String CATEGORIA = "Categoria";
     private OnFragmentInteractionListener mListener;
+    private View view;
+    private Bundle bundle;
+    private ViewGroup contenedor;
+    private Fragment miFragment;
+
 
     public MiArmario() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MiArmario.
-     */
     // TODO: Rename and change types and number of parameters
     public static MiArmario newInstance(String param1, String param2) {
         MiArmario fragment = new MiArmario();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,17 +36,114 @@ public class MiArmario extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mi_armario, container, false);
+        contenedor = container;
+        miFragment = new MostrarRopa();
+        bundle = new Bundle();
+        char sexo = 'h';
+        if (sexo == 'm')
+        {
+            view = inflater.inflate(R.layout.fragment_mi_armario, container, false);
+            armarioMujer();
+        }
+        else {
+            view = inflater.inflate(R.layout.fragment_mi_armario_h, container, false);
+            armarioHombre();
+        }
+        return view;
+    }
+    public void armarioMujer ()
+    {
+        ImageButton IBBlusas;
+        ImageButton IBPantalones;
+        ImageButton IBZapatos;
+        ImageButton IBVestidos;
+
+        IBBlusas = view.findViewById(R.id.IBBlusas);
+        IBPantalones = view.findViewById(R.id.IBPantalones);
+        IBZapatos = view.findViewById(R.id.IBZapatos);
+        IBVestidos = view.findViewById(R.id.IBVestidos);
+
+        IBBlusas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bundle.putString(CATEGORIA, "2");
+                miFragment.setArguments(bundle);
+                cambiarFragment();
+            }
+        });
+        IBPantalones.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bundle.putString(CATEGORIA, "1");
+                miFragment.setArguments(bundle);
+                cambiarFragment();
+            }
+        });
+        IBZapatos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bundle.putString(CATEGORIA, "4");
+                miFragment.setArguments(bundle);
+                cambiarFragment();
+            }
+        });
+        IBVestidos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bundle.putString(CATEGORIA, "3");
+                miFragment.setArguments(bundle);
+                cambiarFragment();
+            }
+        });
+    }
+    public void cambiarFragment ()
+    {
+        getFragmentManager().beginTransaction().replace(R.id.LYMiArmario, miFragment).commit();
+    }
+
+    public void armarioHombre ()
+    {
+        ImageButton IBCamisas;
+        ImageButton IBPantalones;
+        ImageButton IBZapatos;
+        IBCamisas = view.findViewById(R.id.IBCamisas);
+        IBPantalones = view.findViewById(R.id.IBPantalonesH);
+        IBZapatos = view.findViewById(R.id.IBZapatosH);
+        IBCamisas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bundle.putString(CATEGORIA, "2");
+                miFragment.setArguments(bundle);
+                cambiarFragmentH();
+            }
+        });
+        IBPantalones.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bundle.putString(CATEGORIA, "1");
+                miFragment.setArguments(bundle);
+                cambiarFragmentH();
+            }
+        });
+        IBZapatos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bundle.putString(CATEGORIA, "4");
+                miFragment.setArguments(bundle);
+                cambiarFragmentH();
+            }
+        });
+    }
+
+    public void cambiarFragmentH ()
+    {
+        getFragmentManager().beginTransaction().replace(R.id.LYMiArmarioH, miFragment).commit();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -92,16 +170,7 @@ public class MiArmario extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

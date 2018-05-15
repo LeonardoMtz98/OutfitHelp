@@ -1,0 +1,36 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@android:color/white"
+    android:layout_height="match_parent"
+    android:id="@+id/LYMiArmarioH"
+    android:orientation="vertical"
+
+    tools:context="com.app.oh.outfithelp.Vistas.MiArmario">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+        <ImageButton
+            android:id="@+id/IBCamisas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_top_hombre"/>
+        <ImageButton
+            android:id="@+id/IBPantalonesH"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_pantalon_hombre"/>
+
+        <ImageButton
+            android:id="@+id/IBZapatosH"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:src="@drawable/ic_zapatos_hombre" />
+    </LinearLayout>
+</FrameLayout>

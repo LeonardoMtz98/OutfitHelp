@@ -3,6 +3,7 @@ package com.app.oh.outfithelp.Vistas;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,6 +38,7 @@ public class LogIn extends Activity {
     Button BTIniciarSesion;
     TextView TVInfo;
     TextView TVRegistrarse;
+    String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +50,11 @@ public class LogIn extends Activity {
         BTIniciarSesion = findViewById(R.id.BTIniciarSesion);
         TVInfo = findViewById(R.id.TVInfo);
         TVRegistrarse = findViewById(R.id.TVRegistrate);
-
+        String correo = PreferencesConfig.getInstancia(this).getFromSharedPrefs("Correo");
+        if (!correo.equals("NULL"))
+        {
+            ETCorreoElectronico.setText(correo);
+        }
         BTIniciarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,7 +71,7 @@ public class LogIn extends Activity {
         });
     }
     public void EnviarDatos () {
-        String email = ETCorreoElectronico.getText().toString();
+        email = ETCorreoElectronico.getText().toString();
         String pass = ETContraseña.getText().toString();
         String secret = Secret.getInstancia(this).code(email, pass);
         logIn(secret);
@@ -104,6 +110,7 @@ public class LogIn extends Activity {
         }
         else {
             PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs("Secret", secret);
+            PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs("Correo", email);
             Intent miIntent = new Intent(this, OutfitHelp.class);
             startActivity(miIntent);
             LogIn.this.finish();
