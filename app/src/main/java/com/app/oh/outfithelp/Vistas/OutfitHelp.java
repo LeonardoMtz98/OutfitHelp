@@ -24,7 +24,7 @@ public class OutfitHelp extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, Inicio.OnFragmentInteractionListener
         , MiArmario.OnFragmentInteractionListener, Comunidad.OnFragmentInteractionListener,
         MisPeticiones.OnFragmentInteractionListener, Favoritos.OnFragmentInteractionListener,
-        MostrarRopa.OnFragmentInteractionListener{
+        MostrarRopa.OnFragmentInteractionListener, DetallesRopa.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

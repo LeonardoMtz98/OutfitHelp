@@ -8,8 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.app.oh.outfithelp.R;
+import com.app.oh.outfithelp.Utilidades.PreferencesConfig;
 
 
 public class MiArmario extends Fragment {
@@ -45,14 +47,14 @@ public class MiArmario extends Fragment {
         contenedor = container;
         miFragment = new MostrarRopa();
         bundle = new Bundle();
-        char sexo = 'h';
-        if (sexo == 'm')
+        view = inflater.inflate(R.layout.fragment_mi_armario_h, container, false);
+        String sexo = PreferencesConfig.getInstancia(view.getContext()).getFromSharedPrefs("Sexo");
+        if(sexo.equals("M"))
         {
             view = inflater.inflate(R.layout.fragment_mi_armario, container, false);
             armarioMujer();
         }
         else {
-            view = inflater.inflate(R.layout.fragment_mi_armario_h, container, false);
             armarioHombre();
         }
         return view;

@@ -35,8 +35,10 @@ public class MostrarRopa extends Fragment {
 
     private static final String CATEGORIA = "Categoria";
     private static final String IP = "http://104.210.40.93/";
+    public static final String IMAGEN = "Imagen";
     private String categoria;
     private View view;
+    private ArrayList<String> lista = new ArrayList<String>();
     private OnFragmentInteractionListener mListener;
     private ImageButton IBBackCategorias;
     private RecyclerView recyclerView;
@@ -63,7 +65,7 @@ public class MostrarRopa extends Fragment {
             @Override
             public void onClick(View view) {
                 Fragment miFragment = new MiArmario();
-                getFragmentManager().beginTransaction().replace(R.id.LYMostrarRopa, miFragment).commit();
+                getFragmentManager().beginTransaction().add(R.id.LYMostrarRopa, miFragment).commit();
             }
         });
         getImagenes();
@@ -87,7 +89,7 @@ public class MostrarRopa extends Fragment {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<>();
-                params.put("Secret","M$5l$4Us$4r!$%m$5l$4$1s$4r" );
+                params.put("Secret",PreferencesConfig.getInstancia(view.getContext()).getFromSharedPrefs("Secret") );
                 params.put("Categoria", categoria);
                 return params;
             }
@@ -97,7 +99,6 @@ public class MostrarRopa extends Fragment {
     }
 
     public void Guardar (String response) {
-        ArrayList<String> lista = new ArrayList<String>();
         String res = response.substring(67,response.length()-9);
         JSONArray ropa;
         try {
@@ -114,12 +115,25 @@ public class MostrarRopa extends Fragment {
             recyclerView = view.findViewById(R.id.RVRopa);
             recyclerView.setLayoutManager(new GridLayoutManager(view.getContext(),3));
             RecyclerViewAdapter adapter = new RecyclerViewAdapter(lista);
+            adapter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    detallesRopa(view);
+                }
+            });
             recyclerView.setAdapter(adapter);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-
+    public void detallesRopa (View vista)
+    {
+        Bundle bundle = new Bundle();
+        Fragment miFragment = new DetallesRopa();
+        bundle.putString(IMAGEN, lista.get(recyclerView.getChildAdapterPosition(vista)));
+        miFragment.setArguments(bundle);
+        getFragmentManager().beginTransaction().replace(R.id.LYMostrarRopa, miFragment).commit();
+    }
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);

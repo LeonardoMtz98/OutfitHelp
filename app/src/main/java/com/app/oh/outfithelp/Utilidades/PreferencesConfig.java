@@ -16,7 +16,7 @@ public class PreferencesConfig {
     private static Context miContext;
 
 
-    private PreferencesConfig (Context c)
+    public PreferencesConfig (Context c)
     {
         miContext = c;
         sp = c.getSharedPreferences("Credenciales", Context.MODE_PRIVATE);

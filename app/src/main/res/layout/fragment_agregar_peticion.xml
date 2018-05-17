@@ -1,0 +1,53 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="40dp"
+    tools:context="com.app.oh.outfithelp.Vistas.AgregarPeticion">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/white"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:text="X"
+            android:textSize="20sp"
+            android:backgroundTint="@android:color/white"
+            android:textAlignment="textEnd"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:layout_width="130dp"
+            android:layout_gravity="center"
+            android:layout_height="160dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18dp"
+                android:text="Tipo de Evento: "/>
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/SpinnerEventos">
+            </Spinner>
+
+
+        </LinearLayout>
+
+
+        <DatePicker
+            android:id="@+id/datePicker"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+    
+
+</LinearLayout>

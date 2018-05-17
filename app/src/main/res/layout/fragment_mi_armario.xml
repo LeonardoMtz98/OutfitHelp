@@ -1,49 +1,56 @@
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@android:color/white"
     android:id="@+id/LYMiArmario"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_margin="12dp"
+
     tools:context="com.app.oh.outfithelp.Vistas.MiArmario">
-
-    <GridLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="horizontal"
-        >
-        <ImageButton
-            android:id="@+id/IBBlusas"
-            android:layout_width="wrap_content"
+        android:orientation="vertical">
+        <GridLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:src="@drawable/ic_top_mujer"/>
-        <ImageButton
-            android:id="@+id/IBPantalones"
-            android:layout_width="wrap_content"
+
+            android:orientation="horizontal"
+            >
+            <ImageButton
+                android:id="@+id/IBBlusas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:src="@drawable/ic_top_mujer"/>
+            <ImageButton
+                android:id="@+id/IBPantalones"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_pantalon_mujer"/>
+
+            <ImageButton
+                android:id="@+id/IBZapatos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:src="@drawable/ic_zapatos_mujer" />
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_pantalon_mujer"/>
 
-        <ImageButton
-            android:id="@+id/IBZapatos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:src="@drawable/ic_zapatos_mujer" />
-    </GridLayout>
+            android:orientation="horizontal">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:id="@+id/IBVestidos"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_vestido"/>
 
-    <GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:id="@+id/IBVestidos"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_vestido"/>
+        </GridLayout>
+    </LinearLayout>
 
-    </GridLayout>
 
-</LinearLayout>
+</FrameLayout>

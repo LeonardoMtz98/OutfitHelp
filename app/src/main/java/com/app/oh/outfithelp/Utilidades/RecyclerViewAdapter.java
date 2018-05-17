@@ -15,16 +15,19 @@ import java.util.ArrayList;
  * Created by Grecia on 08/05/2018.
  */
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>
+    implements View.OnClickListener{
 
     private ArrayList<String> lista = new ArrayList<>();
     private View view;
+    private View.OnClickListener listener;
     public RecyclerViewAdapter(ArrayList<String> lista) {
         this.lista = lista;
     }
     @Override
     public RecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.plantilla_ropa,null,false);
+        view.setOnClickListener(this);
         return new ViewHolder(view);
     }
 
@@ -36,6 +39,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public int getItemCount() {
         return lista.size();
+    }
+
+    public void setOnClickListener(View.OnClickListener listener)
+    {
+        this.listener = listener;
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (listener != null)
+        {
+            listener.onClick(view);
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -1,6 +1,7 @@
 package com.app.oh.outfithelp.Vistas;
 
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +26,9 @@ import com.app.oh.outfithelp.Utilidades.Secret;
 import com.app.oh.outfithelp.Utilidades.VolleySingleton;
 import com.app.oh.outfithelp.Utilidades.WebService;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,13 +36,14 @@ public class LogIn extends Activity {
 
     private static final String ip = "http://104.210.40.93/";
     private String url;
-    String res;
-    EditText ETCorreoElectronico;
-    EditText ETContraseña;
-    Button BTIniciarSesion;
-    TextView TVInfo;
-    TextView TVRegistrarse;
-    String email;
+    private String res;
+    private EditText ETCorreoElectronico;
+    private EditText ETContraseña;
+    private Button BTIniciarSesion;
+    private TextView TVInfo;
+    private TextView TVRegistrarse;
+    private String email;
+    private String pass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +77,7 @@ public class LogIn extends Activity {
     }
     public void EnviarDatos () {
         email = ETCorreoElectronico.getText().toString();
-        String pass = ETContraseña.getText().toString();
+        pass = ETContraseña.getText().toString();
         String secret = Secret.getInstancia(this).code(email, pass);
         logIn(secret);
     }
@@ -82,7 +87,7 @@ public class LogIn extends Activity {
         StringRequest logIn = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                respuesta(response, secret);
+                respuesta(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -97,23 +102,36 @@ public class LogIn extends Activity {
                 return params;
             }
         };
-        logIn.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,1,1));
+        logIn.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,3,1));
         VolleySingleton.getInstancia(LogIn.this).agregarACola(logIn);
     }
-    public void respuesta (String response, String secret)
+    public void respuesta (String response)
     {
         String respuesta = response.substring(67, response.length()-9);
-        if (!respuesta.equals("Exito")) {
-            TVInfo.setText(respuesta);
-            ETCorreoElectronico.setText("");
-            ETContraseña.setText("");
+        JSONArray usuario;
+        try {
+            usuario = new JSONArray(respuesta);
+            if (!usuario.getString(0).equals("Exito")) {
+                TVInfo.setText(respuesta);
+                ETCorreoElectronico.setText("");
+                ETContraseña.setText("");
+            }
+            else {
+                String secret;
+                secret = Secret.getInstancia(LogIn.this).code(usuario.getString(1),pass);
+                Toast.makeText(this, secret, Toast.LENGTH_SHORT).show();
+                PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs("Secret", secret);
+                PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs("Correo", email);
+                PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs("Sexo", usuario.getString(2));
+                Intent miIntent = new Intent(this, OutfitHelp.class);
+                startActivity(miIntent);
+                LogIn.this.finish();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error en la conexión", Toast.LENGTH_SHORT).show();
         }
-        else {
-            PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs("Secret", secret);
-            PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs("Correo", email);
-            Intent miIntent = new Intent(this, OutfitHelp.class);
-            startActivity(miIntent);
-            LogIn.this.finish();
-        }
+
+
     }
 }
