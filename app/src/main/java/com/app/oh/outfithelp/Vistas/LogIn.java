@@ -119,8 +119,8 @@ public class LogIn extends Activity {
             else {
                 String secret;
                 secret = Secret.getInstancia(LogIn.this).code(usuario.getString(1),pass);
-                Toast.makeText(this, secret, Toast.LENGTH_SHORT).show();
                 PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs("Secret", secret);
+                PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs("Username",usuario.getString(1));
                 PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs("Correo", email);
                 PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs("Sexo", usuario.getString(2));
                 Intent miIntent = new Intent(this, OutfitHelp.class);
