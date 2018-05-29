@@ -127,7 +127,7 @@ public class MostrarRopa extends Fragment {
                 }
             }
 
-            RecyclerViewAdapter adapter = new RecyclerViewAdapter(lista);
+            RecyclerViewAdapterRopa adapter = new RecyclerViewAdapterRopa(lista);
             adapter.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
