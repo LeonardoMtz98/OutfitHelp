@@ -54,6 +54,11 @@
                 android:textColorHint="@android:color/black"
                 android:alpha=".50"
                 />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/TVErrorMail"
+                android:textColor="@android:color/holo_red_dark"/>
             <EditText
                 android:id="@+id/ETContraseña"
                 android:layout_width="match_parent"
@@ -63,6 +68,11 @@
                 android:textColorHint="@android:color/black"
                 android:alpha=".50"
                 android:gravity="bottom"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/TVErrorFormPass"
+                android:textColor="@android:color/holo_red_dark"/>
             <EditText
                 android:id="@+id/ETConfirmarContraseña"
                 android:layout_width="match_parent"
@@ -72,6 +82,11 @@
                 android:textColorHint="@android:color/black"
                 android:alpha=".50"
                 android:gravity="bottom"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/TVErrorPass"
+                android:textColor="@android:color/holo_red_dark"/>
             <RadioGroup
                 android:id="@+id/RadioGroupGenero"
                 android:layout_width="wrap_content"
@@ -81,14 +96,21 @@
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/RadioHombre"
                     android:text="Hombre"
                     android:textSize="20dp"/>
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/RadioMujer"
                     android:text="Mujer"
                     android:textSize="20dp"/>
             </RadioGroup>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/TVErrorSexo"
+                android:textColor="@android:color/holo_red_dark"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -96,10 +118,40 @@
                 android:textSize="15dp"/>
             <Spinner
                 android:id="@+id/SpinnerPaises"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dialog"></Spinner>
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/SpinnerEstados"
+                android:spinnerMode="dialog"></Spinner>
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:spinnerMode="dropdown"
-                ></Spinner>
+                android:id="@+id/TVErrorEstado"
+                android:textColor="@android:color/holo_red_dark"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/TVUsername"
+                    android:text="Username"
+                    android:textSize="30dp"
+                    android:textColor="@android:color/white"/>
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/IBTActualizarUsername"
+                    android:backgroundTint="@color/colorBlueDark"
+                    android:src="@drawable/ic_autorenew_black_24dp"
+                    />
+
+            </LinearLayout>
             <Button
                 android:id="@+id/BTRegistrarse"
                 android:layout_width="200dp"
