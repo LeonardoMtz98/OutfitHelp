@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -30,6 +32,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.app.oh.outfithelp.R;
 import com.app.oh.outfithelp.Utilidades.PreferencesConfig;
 import com.app.oh.outfithelp.Utilidades.VolleySingleton;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,8 +53,10 @@ public class AgregarPeticion extends Fragment {
     private OnFragmentInteractionListener mListener;
     private View view;
     private Spinner spinnerEventos;
+    private Spinner spinnerAvatar;
     private ImageButton IBCalendario;
     private ImageButton IBReloj;
+    private ImageView IVAvatarAgregarPeticion;
     private TextView TVCerrarAgregarPeticion;
     private TextView TVFechaAgregarPeticion;
     private TextView TVHoraAgregarPeticion;
@@ -63,10 +68,13 @@ public class AgregarPeticion extends Fragment {
     private TextView TVFaltaDescripcion;
     private int dia, mes, año, hora, minuto;
     private boolean tipoDeHora;
+    private boolean eventoHoy;
     private int tipoDeEvento;
     private Calendar calendar;
     private String fecha, tiempo;
     private HashMap<String, Integer> HashEventos = new HashMap<>();
+    private ArrayList<String> listaAvatares;
+    private int avatarSeleccionado;
 
     public AgregarPeticion() {
         // Required empty public constructor
@@ -91,9 +99,12 @@ public class AgregarPeticion extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_agregar_peticion, container, false);
         spinnerEventos = view.findViewById(R.id.SpinnerEventos);
+        spinnerAvatar = view.findViewById(R.id.SpinnerAvatar);
         TVCerrarAgregarPeticion = view.findViewById(R.id.TVCerrarAgregarPeticion);
         IBCalendario = view.findViewById(R.id.IBCalendario);
         IBReloj = view.findViewById(R.id.IBReloj);
+        listaAvatares = new ArrayList<String>();
+        IVAvatarAgregarPeticion = view.findViewById(R.id.IVAvatarAgregarPeticion);
         TVFechaAgregarPeticion = view.findViewById(R.id.TVFechaAgregarPeticion);
         TVHoraAgregarPeticion = view.findViewById(R.id.TVHoraAgregarPeticion);
         ETDescripcionAgregarPeticion = view.findViewById(R.id.ETDescripcionAgregarPeticion);
@@ -109,11 +120,19 @@ public class AgregarPeticion extends Fragment {
         año = calendar.get(Calendar.YEAR);
         hora = calendar.get(Calendar.HOUR_OF_DAY);
         minuto = calendar.get(Calendar.MINUTE);
+        IBReloj.setEnabled(false);
+        obtenerAvatares();
         obtenerTiposDeEvento();
         TVCerrarAgregarPeticion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getFragmentManager().beginTransaction().remove(AgregarPeticion.this).commit();
+            }
+        });
+        BTAgregarPeticion.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return false;
             }
         });
         IBCalendario.setOnClickListener(new View.OnClickListener() {
@@ -128,12 +147,24 @@ public class AgregarPeticion extends Fragment {
                 abrirReloj();
             }
         });
-
         spinnerEventos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 tipoDeEvento = i;
                 TVFaltaTipoEvento.setText("");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        spinnerAvatar.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View vista, int seleccion, long l) {
+                String url = IP + listaAvatares.get(seleccion);
+                Picasso.with(view.getContext()).load(url).into(IVAvatarAgregarPeticion);
+                avatarSeleccionado = seleccion;
             }
 
             @Override
@@ -175,10 +206,50 @@ public class AgregarPeticion extends Fragment {
             TVFaltaDescripcion.setText("* Agrega una descripcion");
             completo = false;
         }
+        if (!TVFaltaFecha.getText().equals("")) completo = false;
+        if (!TVFaltaHora.getText().equals("")) completo = false;
         if (completo)
         {
             enviarPeticion();
             getFragmentManager().beginTransaction().remove(AgregarPeticion.this).commit();
+        }
+    }
+    public void obtenerAvatares()
+    {
+        String url = IP + "WebService.asmx/getAvatares";
+        StringRequest avatares = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                spinnerAvatares(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(view.getContext(), "Oops! Error al obtener imagenes", Toast.LENGTH_SHORT).show();
+            }
+        });
+        VolleySingleton.getInstancia(view.getContext()).agregarACola(avatares);
+    }
+
+    public void spinnerAvatares (String response)
+    {
+        String respuesta = response.substring(67,response.length()-9);
+        JSONArray ArrayAvatares;
+        ArrayList<Integer> opciones = new ArrayList<Integer>();
+        try {
+            ArrayAvatares = new JSONArray(respuesta);
+            for (int i = 0; i < ArrayAvatares.length(); i++)
+            {
+                JSONObject ObjetoEventos = ArrayAvatares.getJSONObject(i);
+                opciones.add(i);
+                listaAvatares.add(ObjetoEventos.getString("Direccion"));
+            }
+            ArrayAdapter<CharSequence> spinnerAdapter = new ArrayAdapter(view.getContext(),
+                    android.R.layout.simple_spinner_item, opciones);
+            spinnerAvatar.setAdapter(spinnerAdapter);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(view.getContext(),"Oops! Error al leer avatares",Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -245,6 +316,7 @@ public class AgregarPeticion extends Fragment {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<>();
+                params.put("avatar", ""+avatarSeleccionado);
                 params.put("tipoDeEvento", ""+evento);
                 params.put("date", date);
                 params.put("descripcion", ETDescripcionAgregarPeticion.getText().toString());
@@ -262,8 +334,24 @@ public class AgregarPeticion extends Fragment {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int mothOfYear, int dayOfMonth) {
                 TVFechaAgregarPeticion.setText(dayOfMonth+"/" + mothOfYear + "/" + year );
-                TVFaltaFecha.setText("");
+                if (dayOfMonth < dia && mothOfYear <= mes && year <= año)
+                {
+                    TVFaltaFecha.setText("Fecha Invalida");
+                }
+                else if (mothOfYear < mes && year <= año)
+                {
+                    TVFaltaFecha.setText("Fecha Invalida");
+                }
+                else if (year < año)
+                {
+                    TVFaltaFecha.setText("Fecha Invalida");
+                }
+                else {
+                    IBReloj.setEnabled(true);
+                    TVFaltaFecha.setText("");
+                }
                 fecha = year + "-" + mothOfYear + "-" + dayOfMonth;
+                if (dayOfMonth == dia && mothOfYear == mes && year == año) eventoHoy = true;
             }
         }, año, mes, dia);
         datePickerDialog.show();
@@ -273,10 +361,16 @@ public class AgregarPeticion extends Fragment {
     {
         TimePickerDialog timePickerDialog = new TimePickerDialog(view.getContext(), new TimePickerDialog.OnTimeSetListener() {
             @Override
-            public void onTimeSet(TimePicker timePicker, int hora, int minuto) {
-                TVHoraAgregarPeticion.setText(hora+":" + minuto );
+            public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+                TVHoraAgregarPeticion.setText(hour+":" + minute );
                 tiempo = hora+":" + minuto;
-                TVFaltaHora.setText("");
+                if (eventoHoy) {
+                    if (hour < hora && minute <minute) TVFaltaHora.setText("Hora invalida");
+                    else if (hour == hora && minute < minuto) TVFaltaHora.setText("Hora invalida");
+                }
+                else {
+                    TVFaltaHora.setText("");
+                }
             }
         }, hora, minuto, tipoDeHora);
         timePickerDialog.show();

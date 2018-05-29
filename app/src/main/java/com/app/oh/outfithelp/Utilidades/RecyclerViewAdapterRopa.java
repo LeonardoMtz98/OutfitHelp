@@ -15,24 +15,24 @@ import java.util.ArrayList;
  * Created by Grecia on 08/05/2018.
  */
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>
+public class RecyclerViewAdapterRopa extends RecyclerView.Adapter<RecyclerViewAdapterRopa.ViewHolder>
     implements View.OnClickListener{
 
     private ArrayList<String> lista = new ArrayList<>();
     private View view;
     private View.OnClickListener listener;
-    public RecyclerViewAdapter(ArrayList<String> lista) {
+    public RecyclerViewAdapterRopa(ArrayList<String> lista) {
         this.lista = lista;
     }
     @Override
-    public RecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerViewAdapterRopa.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.plantilla_ropa,null,false);
         view.setOnClickListener(this);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerViewAdapterRopa.ViewHolder holder, int position) {
         holder.mostrarDatos(lista.get(position).toString());
     }
 

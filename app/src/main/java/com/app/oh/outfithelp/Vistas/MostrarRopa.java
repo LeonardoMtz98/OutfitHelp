@@ -10,8 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -21,7 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.app.oh.outfithelp.R;
 import com.app.oh.outfithelp.Utilidades.PreferencesConfig;
-import com.app.oh.outfithelp.Utilidades.RecyclerViewAdapter;
+import com.app.oh.outfithelp.Utilidades.RecyclerViewAdapterRopa;
 import com.app.oh.outfithelp.Utilidades.VolleySingleton;
 
 import org.json.JSONArray;
@@ -114,7 +112,7 @@ public class MostrarRopa extends Fragment {
             }
             recyclerView = view.findViewById(R.id.RVRopa);
             recyclerView.setLayoutManager(new GridLayoutManager(view.getContext(),3));
-            RecyclerViewAdapter adapter = new RecyclerViewAdapter(lista);
+            RecyclerViewAdapterRopa adapter = new RecyclerViewAdapterRopa(lista);
             adapter.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
