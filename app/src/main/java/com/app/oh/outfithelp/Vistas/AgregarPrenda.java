@@ -92,9 +92,12 @@ public class AgregarPrenda extends Fragment {
             @Override
             public void onClick(View view) {
                 File imagen;
-                if (DireccionFoto.equals("") || DireccionFoto == null){
-                    imagen = new File(DireccionFoto);
-                    if (imagen.exists()) imagen.delete();
+                if (!(DireccionFoto == null)){
+                    if (DireccionFoto.isEmpty()){}
+                    else {
+                        imagen = new File(DireccionFoto);
+                        if (imagen.exists()) imagen.delete();
+                    }
                 }
                 getFragmentManager().beginTransaction().remove(AgregarPrenda.this).commit();
             }
