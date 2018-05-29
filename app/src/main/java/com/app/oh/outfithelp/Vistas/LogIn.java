@@ -118,7 +118,6 @@ public class LogIn extends Activity {
             else {
                 String secret;
                 secret = Secret.getInstancia(LogIn.this).code(usuario.getString(1),pass);
-                Toast.makeText(this, secret, Toast.LENGTH_SHORT).show();
                 PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs(SignIn.SECRET, secret);
                 PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs(SignIn.CORREO, email);
                 PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs(SignIn.SEXO, usuario.getString(2));

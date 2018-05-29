@@ -26,13 +26,13 @@ public class OutfitHelp extends AppCompatActivity
         MisPeticiones.OnFragmentInteractionListener, Favoritos.OnFragmentInteractionListener,
         MostrarRopa.OnFragmentInteractionListener, DetallesRopa.OnFragmentInteractionListener,
         AgregarPrenda.OnFragmentInteractionListener{
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_outfit_help);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView TVEmail = findViewById(R.id.TVEmail);
+        TextView TVEmail;
+        TVEmail = findViewById(R.id.TVEmail);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -63,9 +63,11 @@ public class OutfitHelp extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+
             super.onBackPressed();
         }
     }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
