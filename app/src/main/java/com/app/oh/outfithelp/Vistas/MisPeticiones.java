@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -196,6 +197,7 @@ public class MisPeticiones extends Fragment {
    public void mostrarPeticiones (String response)
    {
        String respuesta = response.substring(67,response.length()-9);
+       Log.e("Respuesta json", respuesta);
        JSONArray peticiones;
        try {
            peticiones = new JSONArray(respuesta);
@@ -203,25 +205,26 @@ public class MisPeticiones extends Fragment {
            for (int i=0; i<peticiones.length(); i++)
            {
                JSONObject peticion = peticiones.getJSONObject(i);
-               listaPeticiones[i][0] = IP + Avatares.get(peticion.getInt("FkAvatar"));
+               listaPeticiones[i][0] = IP + Avatares.get(peticion.getInt("FKAvatar"));
                listaPeticiones[i][1] = peticion.getString("Fecha").replace("T", " ");
                listaPeticiones[i][2] = Eventos.get(peticion.getInt("FkTipoEvento"));
                listaPeticiones[i][3] = peticion.getString("Descripcion");
                listaPeticiones[i][4] = peticion.getString("PkPeticion");
            }
-           RecyclerViewAdapterPeticiones adapter = new RecyclerViewAdapterPeticiones(listaPeticiones);
-           adapter.setLongClickListener(new View.OnLongClickListener() {
-               @Override
-               public boolean onLongClick(View view) {
-                   dialogEliminarPeticion(view);
-                   return false;
-               }
-           });
-           recyclerPeticiones.setAdapter(adapter);
+
        } catch (JSONException e) {
            e.printStackTrace();
            Toast.makeText(view.getContext(),"Oops! Error al obtener Peticiones", Toast.LENGTH_SHORT).show();
        }
+       RecyclerViewAdapterPeticiones adapter = new RecyclerViewAdapterPeticiones(listaPeticiones);
+       adapter.setLongClickListener(new View.OnLongClickListener() {
+           @Override
+           public boolean onLongClick(View view) {
+               dialogEliminarPeticion(view);
+               return false;
+           }
+       });
+       recyclerPeticiones.setAdapter(adapter);
    }
     public void dialogEliminarPeticion (final View vista)
     {

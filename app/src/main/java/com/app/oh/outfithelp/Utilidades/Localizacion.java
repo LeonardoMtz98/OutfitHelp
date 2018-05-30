@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
@@ -15,6 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -30,7 +32,7 @@ import java.util.Set;
 public class Localizacion {
     private static Localizacion miInstancia;
     private static Context miContext;
-    private static final String IP = "104.219.40.93/";
+    private static final String IP = "http://104.210.40.93/";
     private FusedLocationProviderClient mFusedLocationClient;
     private double longitud;
     private double latitud;
@@ -65,7 +67,9 @@ public class Localizacion {
             @Override
             public void onSuccess(Location location) {
                 if (location != null) {
+
                     latitud = location.getLatitude();
+                    while (latitud == 0) getLocalizacion();
                     longitud = location.getLongitude();
                     mandarLocalizacion(latitud, longitud);
                     localizacion = latitud + " " + longitud;
@@ -77,7 +81,7 @@ public class Localizacion {
     public void mandarLocalizacion (final double latitud, final double longitud)
     {
         String url = IP + "WebService.asmx/setLocalizacion";
-        StringRequest localizacion = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        StringRequest mandarLocalizacion = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -97,5 +101,6 @@ public class Localizacion {
                 return params;
             }
         };
+        VolleySingleton.getInstancia(miContext).agregarACola(mandarLocalizacion);
     }
 }

@@ -25,7 +25,7 @@ public class OutfitHelp extends AppCompatActivity
         , MiArmario.OnFragmentInteractionListener, Comunidad.OnFragmentInteractionListener,
         MisPeticiones.OnFragmentInteractionListener, Favoritos.OnFragmentInteractionListener,
         MostrarRopa.OnFragmentInteractionListener, DetallesRopa.OnFragmentInteractionListener,
-        AgregarPeticion.OnFragmentInteractionListener{
+        AgregarPeticion.OnFragmentInteractionListener, Recomendacion.OnFragmentInteractionListener{
     TextView TVEmail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

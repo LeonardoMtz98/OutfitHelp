@@ -4,60 +4,53 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.app.oh.outfithelp.R;
+import com.app.oh.outfithelp.Utilidades.PreferencesConfig;
+import com.app.oh.outfithelp.Utilidades.RecyclerViewAdapterComunidad;
+import com.app.oh.outfithelp.Utilidades.RecyclerViewAdapterPeticiones;
+import com.app.oh.outfithelp.Utilidades.VolleySingleton;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Comunidad.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Comunidad#newInstance} factory method to
- * create an instance of this fragment.
- */
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Comunidad extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private static final String IP = "http://104.210.40.93/";
+    private HashMap<Integer, String> Eventos;
+    private HashMap<Integer, String> Avatares;
+    private RecyclerView recyclerComunidad;
+    private Bundle bundle;
+    private String [][] listaPeticiones;
+    //private ArrayList<String> listaPeticiones;
+    private View view;
 
     public Comunidad() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Comunidad.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Comunidad newInstance(String param1, String param2) {
-        Comunidad fragment = new Comunidad();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
     }
 
@@ -65,10 +58,145 @@ public class Comunidad extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_comunidad, container, false);
+        view = inflater.inflate(R.layout.fragment_comunidad, container, false);
+        //listaPeticiones = new ArrayList<>();
+        Eventos = new HashMap<>();
+        Avatares = new HashMap<>();
+        bundle = new Bundle();
+        recyclerComunidad = view.findViewById(R.id.RVComunidad);
+        recyclerComunidad.setLayoutManager(new GridLayoutManager(view.getContext(),1));
+        obtenerDatos();
+        return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    public void obtenerDatos()
+    {
+        String url = IP + "WebService.asmx/getAvatares";
+        StringRequest avatares = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String respuesta = response.substring(67,response.length()-9);
+                JSONArray ArrayAvatares;
+                try {
+                    ArrayAvatares = new JSONArray(respuesta);
+                    for (int i = 0; i < ArrayAvatares.length(); i++)
+                    {
+                        JSONObject ObjetoAvatares = ArrayAvatares.getJSONObject(i);
+                        Avatares.put(ObjetoAvatares.getInt("PkAvatar"), ObjetoAvatares.getString("Direccion"));
+                    }
+                    obtenerEventos();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(view.getContext(),"Oops! Error al leer avatares",Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(view.getContext(), "Oops! Error al obtener imagenes", Toast.LENGTH_SHORT).show();
+            }
+        });
+        VolleySingleton.getInstancia(view.getContext()).agregarACola(avatares);
+    }
+    public void obtenerEventos()
+    {
+        String url = IP + "WebService.asmx/getTiposDeEvento";
+        StringRequest eventos = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String respuesta = response.substring(67,response.length()-9);
+                JSONArray ArrayEventos;
+                try {
+                    ArrayEventos = new JSONArray(respuesta);
+                    for (int i = 0; i < ArrayEventos.length(); i++)
+                    {
+                        JSONObject ObjetoEventos = ArrayEventos.getJSONObject(i);
+                        Eventos.put(ObjetoEventos.getInt("PkEvento"), ObjetoEventos.getString("Nombre"));
+                    }
+                    obtenerPeticiones();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(view.getContext(),"Oops! Error al leer eventos",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(view.getContext(), "Oops! Error al obtener eventos", Toast.LENGTH_SHORT).show();
+            }
+        });
+        VolleySingleton.getInstancia(view.getContext()).agregarACola(eventos);
+    }
+    public void obtenerPeticiones()
+    {
+        String url = IP + "WebService.asmx/getPeticiones";
+        StringRequest obtenerPeticiones = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                mostrarPeticiones(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(view.getContext(),"Oops! Error al cargar Peticiones", Toast.LENGTH_SHORT).show();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String,String> params = new HashMap<>();
+                params.put("Secret", PreferencesConfig.getInstancia(view.getContext()).getFromSharedPrefs("Secret"));
+                return params;
+            }
+        };
+        VolleySingleton.getInstancia(view.getContext()).agregarACola(obtenerPeticiones);
+    }
+
+    public void mostrarPeticiones (String response)
+    {
+        String respuesta = response.substring(67,response.length()-9);
+        JSONArray peticiones;
+        try {
+            peticiones = new JSONArray(respuesta);
+            listaPeticiones = new String [peticiones.length()][6];
+            for (int i=0; i<peticiones.length(); i++)
+            {
+                JSONObject peticion = peticiones.getJSONObject(i);
+                //peticion.put()
+                listaPeticiones[i][0] = IP + Avatares.get(peticion.getInt("FKAvatar"));
+                listaPeticiones[i][1] = peticion.getString("Fecha").replace("T", " ");
+                listaPeticiones[i][2] = Eventos.get(peticion.getInt("FkTipoEvento"));
+                listaPeticiones[i][3] = peticion.getString("Descripcion");
+                listaPeticiones[i][4] = peticion.getString("FkUsuario");
+                listaPeticiones[i][5] = peticion.getString("PkPeticion");
+            }
+            RecyclerViewAdapterComunidad adapter = new RecyclerViewAdapterComunidad(listaPeticiones);
+            adapter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View vista) {
+                    abrirRecomendacion(vista);
+                }
+            });
+            recyclerComunidad.setAdapter(adapter);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(view.getContext(),"Oops! Error al obtener Peticiones", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void abrirRecomendacion(View vista)
+    {
+        int seleccion =  recyclerComunidad.getChildAdapterPosition(vista);
+        bundle.putString("Fecha", listaPeticiones[seleccion][1]);
+        bundle.putString("Evento", listaPeticiones[seleccion][2]);
+        bundle.putString("Descripcion", listaPeticiones[seleccion][3]);
+        bundle.putString("Username", listaPeticiones[seleccion][4]);
+        bundle.putString("PkPeticion", listaPeticiones[seleccion][5]);
+        Fragment miFragment = new Recomendacion();
+        miFragment.setArguments(bundle);
+        getFragmentManager().beginTransaction().replace(R.id.LYComunidad, miFragment).commit();
+    }
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -92,16 +220,6 @@ public class Comunidad extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
