@@ -3,7 +3,9 @@ package com.app.oh.outfithelp.Vistas;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -45,6 +47,7 @@ public class MostrarRopa extends Fragment {
     private ImageButton IBBackCategorias;
     private RecyclerView recyclerView;
     private ImageButton IBAgregarPrenda;
+    private SwipeRefreshLayout swipeRefreshRopa;
 
     public MostrarRopa() {
         // Required empty public constructor
@@ -82,6 +85,19 @@ public class MostrarRopa extends Fragment {
                 bundle.putString("Categoria", categoria);
                 miFragment.setArguments(bundle);
                 getFragmentManager().beginTransaction().replace(R.id.LYMostrarRopa, miFragment).commit();
+            }
+        });
+        swipeRefreshRopa = view.findViewById(R.id.RefreshMostrarRopa);
+        swipeRefreshRopa.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getImagenes();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshRopa.setRefreshing(false);
+                    }
+                },3000);
             }
         });
         getImagenes();

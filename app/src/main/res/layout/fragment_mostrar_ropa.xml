@@ -6,34 +6,40 @@
     android:id="@+id/LYMostrarRopa"
     android:background="@android:color/white"
     tools:context="com.app.oh.outfithelp.Vistas.MostrarRopa">
-    <LinearLayout
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <ImageButton
+        android:layout_height="match_parent"
+        android:id="@+id/RefreshMostrarRopa">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/IBBackCategorias"
-            android:src="@drawable/ic_back"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="5dp"
-            android:background="#F8AA"
-            />
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/RVRopa">
-        </android.support.v7.widget.RecyclerView>
+            android:orientation="vertical">
+            <ImageButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/IBBackCategorias"
+                android:src="@drawable/ic_back"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:background="#F8AA"
+                />
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/RVRopa">
+            </android.support.v7.widget.RecyclerView>
 
-    </LinearLayout>
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/IBAgregarPrenda"
-        android:layout_gravity="bottom|right"
-        android:padding="10dp"
-        android:layout_margin="15dp"
-        android:src="@drawable/ic_add_35dp"
-        style="@style/Widget.Design.FloatingActionButton"
-        android:backgroundTint="@color/colorPrimaryDark"/>
+        </LinearLayout>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/IBAgregarPrenda"
+            android:layout_gravity="bottom|right"
+            android:padding="10dp"
+            android:layout_margin="15dp"
+            android:src="@drawable/ic_add_35dp"
+            style="@style/Widget.Design.FloatingActionButton"
+            android:backgroundTint="@color/colorPrimaryDark"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 </FrameLayout>
