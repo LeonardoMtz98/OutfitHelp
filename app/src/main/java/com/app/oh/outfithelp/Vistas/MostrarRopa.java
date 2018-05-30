@@ -35,10 +35,12 @@ public class MostrarRopa extends Fragment {
     private static final String CATEGORIA = "Categoria";
     public static final String IP = "http://104.210.40.93/";
     public static final String IMAGEN = "Imagen";
+    public static final String DIRECCIONIMG = "DireccionImg";
     private Bundle bundle;
     private String categoria;
     private View view;
     private ArrayList<String> lista = new ArrayList<String>();
+    private ArrayList<String> direcciones = new ArrayList<String>();
     private OnFragmentInteractionListener mListener;
     private ImageButton IBBackCategorias;
     private RecyclerView recyclerView;
@@ -124,6 +126,7 @@ public class MostrarRopa extends Fragment {
                     String y = IP + ropa.getString(i);
                     //Toast.makeText(view.getContext(), y, Toast.LENGTH_LONG).show();
                     lista.add(y);
+                    direcciones.add(ropa.getString(i));
                 }
             }
 
@@ -144,6 +147,7 @@ public class MostrarRopa extends Fragment {
         Bundle bundle = new Bundle();
         Fragment miFragment = new DetallesRopa();
         bundle.putString(IMAGEN, lista.get(recyclerView.getChildAdapterPosition(vista)));
+        bundle.putString(DIRECCIONIMG, direcciones.get(recyclerView.getChildAdapterPosition(vista)));
         miFragment.setArguments(bundle);
         getFragmentManager().beginTransaction().replace(R.id.LYMostrarRopa, miFragment).commit();
     }

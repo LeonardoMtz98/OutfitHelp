@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -36,6 +37,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -71,6 +73,7 @@ public class AgregarPrenda extends Fragment {
     private String DireccionFoto;
     public int CAMARA = 1;
     public int GALERIA = 2;
+    private Bitmap imagen;
     public AgregarPrenda() {
         // Required empty public constructor
     }
@@ -114,6 +117,7 @@ public class AgregarPrenda extends Fragment {
                 tomarFoto();
             }
         });
+        IBTomarFoto.setEnabled(false);
         BTEnviar = view.findViewById(R.id.BTEnviar);
         BTEnviar.setEnabled(false);
         BTEnviar.setOnClickListener(new View.OnClickListener() {
@@ -137,6 +141,7 @@ public class AgregarPrenda extends Fragment {
                         if(unaCategoria.getString("PkCategoria").equals(PkCategoria)) {
                             TVTitulo.append(unaCategoria.getString("Nombre"));
                             categoria = unaCategoria.getString("Nombre");
+                            IBTomarFoto.setEnabled(true);
                         }
                     }
                 } catch (JSONException e) {
@@ -154,39 +159,48 @@ public class AgregarPrenda extends Fragment {
 
     private void sendPrenda() {
         TVInfoFoto.setText("Enviando...");
-        try {
-            Bitmap imagen = MediaStore.Images.Media.getBitmap(this.getContext().getContentResolver(), uriFoto);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            imagen.compress(Bitmap.CompressFormat.JPEG, 90, baos);
-            byte [] imagenEnBytes = baos.toByteArray();
-            final String imagenEnString = Base64.encodeToString(imagenEnBytes, Base64.DEFAULT);
-            Log.d("Baia", imagenEnString);
-            StringRequest peticionEnvioPrenda = new StringRequest(SignIn.url + "sendPrenda", new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    String respuesta = response.substring(67,response.length()-9);
-                    Toast.makeText(AgregarPrenda.this.getContext(), respuesta, Toast.LENGTH_SHORT).show();
-                    TVInfoFoto.setText("Enviada");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        imagen.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        final byte [] imagenEnBytes = baos.toByteArray();
+        final String imagenEnString = Base64.encodeToString(imagenEnBytes, Base64.NO_WRAP);
+        StringRequest peticionEnvioPrenda = new StringRequest(Request.Method.POST, SignIn.url + "sendPrenda", new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String respuesta = response.substring(67, response.length() - 9);
+                Toast.makeText(AgregarPrenda.this.getContext(), respuesta, Toast.LENGTH_SHORT).show();
+                TVInfoFoto.setText("Enviada");
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(AgregarPrenda.this.getContext(), "Oops! Error al enviar prenda", Toast.LENGTH_SHORT).show();
+                Log.e("VolleyError", error.toString());
+                try {
+                    if (error.networkResponse != null) {
+                        if (error.networkResponse.data != null) {
+                            String resp = new String(error.networkResponse.data, "UTF-8");
+                            Log.d("Error net", resp);
+                            Log.d("Secret:", PreferencesConfig.getInstancia(AgregarPrenda.this.getContext()).getFromSharedPrefs(SignIn.SECRET));
+                        }
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(AgregarPrenda.this.getContext(), "Oops! Error al enviar prenda", Toast.LENGTH_SHORT).show();
-                }
-            }) {
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    Map<String, String> params = new HashMap<>();
-                    params.put("secret", PreferencesConfig.getInstancia(AgregarPrenda.this.getContext()).getFromSharedPrefs(SignIn.SECRET));
-                    params.put("categoria", PkCategoria);
-                    params.put("imagen", imagenEnString);
-                    return params;
-                }
-            };
-            VolleySingleton.getInstancia(this.getContext()).agregarACola(peticionEnvioPrenda);
-        } catch (IOException e) {
-            Toast.makeText(this.getContext(), "Oops! Error obteniendo la imagen a enviar", Toast.LENGTH_SHORT).show();
-        }
+                TVInfoFoto.setText("Error enviando");
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                String secret = PreferencesConfig.getInstancia(AgregarPrenda.this.getContext()).getFromSharedPrefs(SignIn.SECRET);
+                params.put("secret", secret);
+                params.put("categoria", PkCategoria);
+                params.put("imagen", imagenEnString);
+                return params;
+            }
+        };
+        peticionEnvioPrenda.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, 0, 0));
+        VolleySingleton.getInstancia(this.getContext()).agregarACola(peticionEnvioPrenda);
     }
 
     private void tomarFoto() {
@@ -221,27 +235,27 @@ public class AgregarPrenda extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMARA && resultCode == RESULT_OK) {
             try {
-                Bitmap imagenTomada = MediaStore.Images.Media.getBitmap(this.getContext().getContentResolver(), uriFoto);
+                imagen = MediaStore.Images.Media.getBitmap(this.getContext().getContentResolver(), uriFoto);
                 Matrix matrix = new Matrix();
                 matrix.postRotate(90);
-                imagenTomada = Bitmap.createBitmap(imagenTomada, 0, 0, imagenTomada.getWidth(), imagenTomada.getHeight(), matrix, true);
-                IVFoto.setImageBitmap(imagenTomada);
+                imagen = Bitmap.createBitmap(imagen, 0, 0, imagen.getWidth(), imagen.getHeight(), matrix, true);
+                IVFoto.setImageBitmap(imagen);
                 TVInfoFoto.setText("Validando...");
-                validarImagen(imagenTomada);
+                validarImagen();
             } catch (IOException e) {
                 Toast.makeText(AgregarPrenda.this.getContext(), "Oops! Error obteniendo imagen", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void validarImagen(final Bitmap imagenTomada) {
+    private void validarImagen() {
         final String SubKey = "b4ddd710c7904ae8acba1b6b9e9fd120";
         String URL = "https://westus.api.cognitive.microsoft.com/vision/v1.0/analyze?visualFeatures=Faces, Adult&language=en";
 
         StringRequest apiRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                validarRespuesta(response, imagenTomada);
+                validarRespuesta(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -266,15 +280,20 @@ public class AgregarPrenda extends Fragment {
             @Override
             public byte[] getBody() throws AuthFailureError {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                imagenTomada.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+                imagen.compress(Bitmap.CompressFormat.JPEG, 90, baos);
                 byte[] imageBytes = baos.toByteArray();
+                try {
+                    baos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 return imageBytes;
             }
         };
         VolleySingleton.getInstancia(this.getContext()).agregarACola(apiRequest);
     }
 
-    private void validarRespuesta(String response, Bitmap imagenTomada) {
+    private void validarRespuesta(String response) {
         try {
             JSONObject Datos = new JSONObject(response);
             JSONArray faces = Datos.getJSONArray("faces");
@@ -284,7 +303,7 @@ public class AgregarPrenda extends Fragment {
                 BTEnviar.setEnabled(false);
             }
             else {
-                if (faces != null) {
+                if (faces != null && faces.length() > 0) {
                     JSONObject caraMasAbajo = faces.getJSONObject(0).getJSONObject("faceRectangle");
                     for (int i = 0; i < faces.length(); i++) {
                         JSONObject cara = faces.getJSONObject(i).getJSONObject("faceRectangle");
@@ -292,18 +311,19 @@ public class AgregarPrenda extends Fragment {
                             caraMasAbajo = cara;
                     }
                     int y = caraMasAbajo.getInt("top") + caraMasAbajo.getInt("height");
-                    imagenTomada = Bitmap.createBitmap(
-                            imagenTomada,
+                    imagen = Bitmap.createBitmap(
+                            imagen,
                             0,
                             y,
-                            imagenTomada.getWidth(),
-                            imagenTomada.getHeight() - y);
+                            imagen.getWidth(),
+                            imagen.getHeight() - y);
                     File archivo = new File(DireccionFoto);
                     FileOutputStream fout = new FileOutputStream(archivo);
-                    imagenTomada.compress(Bitmap.CompressFormat.JPEG, 100, fout);
+                    imagen.compress(Bitmap.CompressFormat.JPEG, 100, fout);
+                    fout.close();
                 }
                 TVInfoFoto.setText("Imagen Válida");
-                IVFoto.setImageBitmap(imagenTomada);
+                IVFoto.setImageBitmap(imagen);
                 BTEnviar.setEnabled(true);
             }
         } catch (IOException ex) {
