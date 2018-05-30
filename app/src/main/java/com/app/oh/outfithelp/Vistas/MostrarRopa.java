@@ -24,6 +24,7 @@ import com.app.oh.outfithelp.Utilidades.VolleySingleton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,14 +33,18 @@ import java.util.Map;
 public class MostrarRopa extends Fragment {
 
     private static final String CATEGORIA = "Categoria";
-    private static final String IP = "http://104.210.40.93/";
+    public static final String IP = "http://104.210.40.93/";
     public static final String IMAGEN = "Imagen";
+    public static final String DIRECCIONIMG = "DireccionImg";
+    private Bundle bundle;
     private String categoria;
     private View view;
     private ArrayList<String> lista = new ArrayList<String>();
+    private ArrayList<String> direcciones = new ArrayList<String>();
     private OnFragmentInteractionListener mListener;
     private ImageButton IBBackCategorias;
     private RecyclerView recyclerView;
+    private ImageButton IBAgregarPrenda;
 
     public MostrarRopa() {
         // Required empty public constructor
@@ -64,6 +69,19 @@ public class MostrarRopa extends Fragment {
             public void onClick(View view) {
                 Fragment miFragment = new MiArmario();
                 getFragmentManager().beginTransaction().add(R.id.LYMostrarRopa, miFragment).commit();
+            }
+        });
+        recyclerView = view.findViewById(R.id.RVRopa);
+        recyclerView.setLayoutManager(new GridLayoutManager(view.getContext(),3));
+        IBAgregarPrenda = view.findViewById(R.id.IBAgregarPrenda);
+        IBAgregarPrenda.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment miFragment = new AgregarPrenda();
+                bundle = new Bundle();
+                bundle.putString("Categoria", categoria);
+                miFragment.setArguments(bundle);
+                getFragmentManager().beginTransaction().replace(R.id.LYMostrarRopa, miFragment).commit();
             }
         });
         getImagenes();
@@ -108,10 +126,10 @@ public class MostrarRopa extends Fragment {
                     String y = IP + ropa.getString(i);
                     //Toast.makeText(view.getContext(), y, Toast.LENGTH_LONG).show();
                     lista.add(y);
+                    direcciones.add(ropa.getString(i));
                 }
             }
-            recyclerView = view.findViewById(R.id.RVRopa);
-            recyclerView.setLayoutManager(new GridLayoutManager(view.getContext(),3));
+
             RecyclerViewAdapterRopa adapter = new RecyclerViewAdapterRopa(lista);
             adapter.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -129,6 +147,7 @@ public class MostrarRopa extends Fragment {
         Bundle bundle = new Bundle();
         Fragment miFragment = new DetallesRopa();
         bundle.putString(IMAGEN, lista.get(recyclerView.getChildAdapterPosition(vista)));
+        bundle.putString(DIRECCIONIMG, direcciones.get(recyclerView.getChildAdapterPosition(vista)));
         miFragment.setArguments(bundle);
         getFragmentManager().beginTransaction().replace(R.id.LYMostrarRopa, miFragment).commit();
     }
