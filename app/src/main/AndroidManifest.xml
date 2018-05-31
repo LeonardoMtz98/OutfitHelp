@@ -52,7 +52,12 @@
             android:name=".Vistas.OutfitHelp"
             android:label="@string/title_activity_outfit_help"
             android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.android.camera.action.CROP" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".Utilidades.CameraOH"
             android:screenOrientation="portrait"/>
     </application>

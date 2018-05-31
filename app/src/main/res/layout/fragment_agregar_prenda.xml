@@ -68,11 +68,11 @@
                     <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/IBElegirFoto"
+                        android:id="@+id/IBRecortarFoto"
                         android:layout_gravity="bottom|right"
                         android:padding="15dp"
                         android:layout_margin="10dp"
-                        android:src="@drawable/ic_photo_library_black_35dp"
+                        android:src="@drawable/ic_crop_black_24dp"
                         style="@style/Widget.Design.FloatingActionButton"/>
                     <Button
                         android:layout_width="wrap_content"

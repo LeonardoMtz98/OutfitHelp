@@ -24,6 +24,12 @@
             android:layout_height="350dp"
             android:layout_gravity="center_horizontal"
             android:id="@+id/IVDetallesRopa"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/TVInfoFoto"
+            android:textColor="@android:color/holo_red_dark"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,12 +40,13 @@
                 android:layout_height="40dp"
                 android:backgroundTint="@color/colorBlueDark"
                 android:src="@drawable/ic_edit"
-                />
+                android:id="@+id/IBEditar"/>
             <ImageButton
                 android:layout_width="fill_parent"
                 android:layout_height="40dp"
                 android:backgroundTint="@color/colorBlueDark"
-                android:src="@drawable/ic_delete"/>
+                android:src="@drawable/ic_delete"
+                android:id="@+id/IBBorrar"/>
         </LinearLayout>
     </LinearLayout>
 

@@ -121,18 +121,20 @@ public class MostrarRopa extends Fragment {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<>();
-                params.put("Secret",PreferencesConfig.getInstancia(view.getContext()).getFromSharedPrefs("Secret") );
-                params.put("Categoria", categoria);
+                params.put("username",PreferencesConfig.getInstancia(view.getContext()).getFromSharedPrefs(SignIn.USERNAME));
+                params.put("categoria", categoria);
                 return params;
             }
         };
-        imagenesRopa.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,3,1));
+        imagenesRopa.setRetryPolicy(new DefaultRetryPolicy(20000,0,0));
         VolleySingleton.getInstancia(view.getContext()).agregarACola(imagenesRopa);
     }
 
     public void Guardar (String response) {
         String res = response.substring(67,response.length()-9);
         JSONArray ropa;
+        lista.clear();
+        direcciones.clear();
         try {
             ropa = new JSONArray(res);
             if (ropa != null)
@@ -146,7 +148,7 @@ public class MostrarRopa extends Fragment {
                 }
             }
 
-            RecyclerViewAdapterRopa adapter = new RecyclerViewAdapterRopa(lista);
+            RecyclerViewAdapterRopa adapter = new RecyclerViewAdapterRopa(lista, direcciones, getContext());
             adapter.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
