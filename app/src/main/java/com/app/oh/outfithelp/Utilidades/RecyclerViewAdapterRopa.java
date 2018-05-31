@@ -1,14 +1,18 @@
 package com.app.oh.outfithelp.Utilidades;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.app.oh.outfithelp.R;
+import com.app.oh.outfithelp.Vistas.AgregarPrenda;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -18,11 +22,15 @@ import java.util.ArrayList;
 public class RecyclerViewAdapterRopa extends RecyclerView.Adapter<RecyclerViewAdapterRopa.ViewHolder>
     implements View.OnClickListener{
 
-    private ArrayList<String> lista = new ArrayList<>();
+    private Context context;
+    private ArrayList<String> lista;
+    private ArrayList<String> direcciones;
     private View view;
     private View.OnClickListener listener;
-    public RecyclerViewAdapterRopa(ArrayList<String> lista) {
+    public RecyclerViewAdapterRopa(ArrayList<String> lista, ArrayList<String> direcciones, Context context) {
+        this.context = context;
         this.lista = lista;
+        this.direcciones = direcciones;
     }
     @Override
     public RecyclerViewAdapterRopa.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -33,7 +41,10 @@ public class RecyclerViewAdapterRopa extends RecyclerView.Adapter<RecyclerViewAd
 
     @Override
     public void onBindViewHolder(RecyclerViewAdapterRopa.ViewHolder holder, int position) {
-        holder.mostrarDatos(lista.get(position).toString());
+        String nombreArchivo = direcciones.get(position).replace("img/", "");
+        File archivo = AgregarPrenda.crearArchivo(nombreArchivo, context);
+        if (archivo.exists()) holder.mostrarDatos("file:" + archivo.getAbsolutePath());
+        else holder.mostrarDatos(lista.get(position).toString());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.app.oh.outfithelp.Vistas;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Matrix;
@@ -68,12 +69,15 @@ public class AgregarPrenda extends Fragment {
     private ImageView IVFoto;
     private TextView TVInfoFoto;
     private ImageButton IBTomarFoto;
+    private ImageButton IBRecortarFoto;
     private Button BTEnviar;
     private Uri uriFoto;
     private String DireccionFoto;
     public int CAMARA = 1;
-    public int GALERIA = 2;
+    public int CROP = 2;
     private Bitmap imagen;
+    private Boolean agregada = false;
+    private ByteArrayOutputStream baos = new ByteArrayOutputStream();
     public AgregarPrenda() {
         // Required empty public constructor
     }
@@ -94,15 +98,7 @@ public class AgregarPrenda extends Fragment {
         IBCerrarVentana.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                File imagen;
-                if (!(DireccionFoto == null)){
-                    if (DireccionFoto.isEmpty()){}
-                    else {
-                        imagen = new File(DireccionFoto);
-                        if (imagen.exists()) imagen.delete();
-                    }
-                }
-                getFragmentManager().beginTransaction().remove(AgregarPrenda.this).commit();
+                cerrarFragment();
             }
         });
         TVTitulo = view.findViewById(R.id.TVTitulo);
@@ -118,6 +114,14 @@ public class AgregarPrenda extends Fragment {
             }
         });
         IBTomarFoto.setEnabled(false);
+        IBRecortarFoto = view.findViewById(R.id.IBRecortarFoto);
+        IBRecortarFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recortar();
+            }
+        });
+        IBRecortarFoto.setVisibility(View.GONE);
         BTEnviar = view.findViewById(R.id.BTEnviar);
         BTEnviar.setEnabled(false);
         BTEnviar.setOnClickListener(new View.OnClickListener() {
@@ -127,6 +131,36 @@ public class AgregarPrenda extends Fragment {
             }
         });
         return view;
+    }
+
+    private void recortar() {
+        try {
+            Intent Recorte = new Intent("com.android.camera.action.CROP");
+            Recorte.setDataAndType(uriFoto, "image/*");
+            Recorte.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+            Recorte.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Recorte.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(DireccionFoto)));
+            startActivityForResult(Recorte, CROP);
+        }
+        catch (ActivityNotFoundException e) {
+
+        }
+    }
+
+    private void cerrarFragment() {
+        if (agregada) {
+
+        } else {
+            File imagen;
+            if (!(DireccionFoto == null)) {
+                if (DireccionFoto.isEmpty()) {
+                } else {
+                    imagen = new File(DireccionFoto);
+                    if (imagen.exists()) imagen.delete();
+                }
+            }
+        }
+        getFragmentManager().beginTransaction().remove(AgregarPrenda.this).commit();
     }
 
     private void getTitulo() {
@@ -159,16 +193,38 @@ public class AgregarPrenda extends Fragment {
 
     private void sendPrenda() {
         TVInfoFoto.setText("Enviando...");
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        imagen.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        IBCerrarVentana.setEnabled(false);
+        IBTomarFoto.setEnabled(false);
+        imagen.compress(Bitmap.CompressFormat.JPEG, 90, baos);
         final byte [] imagenEnBytes = baos.toByteArray();
         final String imagenEnString = Base64.encodeToString(imagenEnBytes, Base64.NO_WRAP);
         StringRequest peticionEnvioPrenda = new StringRequest(Request.Method.POST, SignIn.url + "sendPrenda", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                String respuesta = response.substring(67, response.length() - 9);
-                Toast.makeText(AgregarPrenda.this.getContext(), respuesta, Toast.LENGTH_SHORT).show();
-                TVInfoFoto.setText("Enviada");
+                JSONArray respuesta = null;
+                Log.e("Respuesta pura:", response);
+                try {
+                    Log.e("Respuesta recortada:", response.substring(67, response.length() - 9));
+                    respuesta = new JSONArray(response.substring(67, response.length() - 9));
+                    if (respuesta.getString(0).equals("Exito")) {
+                        Toast.makeText(AgregarPrenda.this.getContext(), respuesta.getString(0), Toast.LENGTH_SHORT).show();
+                        TVInfoFoto.setText("Enviada");
+                        String nombreArchivo = respuesta.getString(1).replace("img/", "");
+                        File imageFile = new File(DireccionFoto);
+                        if (imageFile.renameTo(crearArchivo(nombreArchivo, AgregarPrenda.this.getContext()))) {
+                            Toast.makeText(AgregarPrenda.this.getContext(), "Renombrado con exito", Toast.LENGTH_SHORT).show();
+                            DireccionFoto = imageFile.getAbsolutePath();
+                        }
+                        else Toast.makeText(AgregarPrenda.this.getContext(), "Error al renombrar", Toast.LENGTH_SHORT).show();
+                        agregada = true;
+                        IBCerrarVentana.setEnabled(true);
+                        IBTomarFoto.setEnabled(true);
+                        BTEnviar.setEnabled(true);
+                    }
+                } catch (JSONException e) {
+                    Toast.makeText(getContext(), "Oops! Error al leer la respuesta del servidor.", Toast.LENGTH_SHORT).show();
+                    TVInfoFoto.setText("Indefinido si se subio o no");
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -187,6 +243,17 @@ public class AgregarPrenda extends Fragment {
                     e.printStackTrace();
                 }
                 TVInfoFoto.setText("Error enviando");
+                IBCerrarVentana.setEnabled(true);
+                IBTomarFoto.setEnabled(true);
+                BTEnviar.setEnabled(true);
+                File imagen;
+                if (!(DireccionFoto == null)) {
+                    if (DireccionFoto.isEmpty()) {
+                    } else {
+                        imagen = new File(DireccionFoto);
+                        if (imagen.exists()) imagen.delete();
+                    }
+                }
             }
         }) {
             @Override
@@ -199,7 +266,7 @@ public class AgregarPrenda extends Fragment {
                 return params;
             }
         };
-        peticionEnvioPrenda.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, 0, 0));
+        peticionEnvioPrenda.setRetryPolicy(new DefaultRetryPolicy(20000, 0, 0));
         VolleySingleton.getInstancia(this.getContext()).agregarACola(peticionEnvioPrenda);
     }
 
@@ -216,7 +283,7 @@ public class AgregarPrenda extends Fragment {
 
         startActivityForResult(intentFoto, CAMARA);
     }
-    private File crearArchivo() {
+    public File crearArchivo() {
         File archivo = this.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File imagen = null;
         try {
@@ -230,7 +297,11 @@ public class AgregarPrenda extends Fragment {
         }
         return imagen;
     }
-
+    public static File crearArchivo(String nombreArchivo, Context context) {
+        File archivo = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File imagen = new File(archivo, nombreArchivo);
+        return imagen;
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMARA && resultCode == RESULT_OK) {
@@ -241,7 +312,18 @@ public class AgregarPrenda extends Fragment {
                 imagen = Bitmap.createBitmap(imagen, 0, 0, imagen.getWidth(), imagen.getHeight(), matrix, true);
                 IVFoto.setImageBitmap(imagen);
                 TVInfoFoto.setText("Validando...");
+                IBTomarFoto.setEnabled(false);
+                IBCerrarVentana.setEnabled(false);
                 validarImagen();
+
+            } catch (IOException e) {
+                Toast.makeText(AgregarPrenda.this.getContext(), "Oops! Error obteniendo imagen", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (requestCode == CROP && resultCode == RESULT_OK) {
+            try {
+                imagen =  MediaStore.Images.Media.getBitmap(this.getContext().getContentResolver(), uriFoto);
+                IVFoto.setImageBitmap(imagen);
             } catch (IOException e) {
                 Toast.makeText(AgregarPrenda.this.getContext(), "Oops! Error obteniendo imagen", Toast.LENGTH_SHORT).show();
             }
@@ -265,6 +347,8 @@ public class AgregarPrenda extends Fragment {
                     TVInfoFoto.setText("Error: " + error.toString() + "\nResponse Code: " + nw.statusCode );
                 }
                 else TVInfoFoto.setText("Error: " + error.toString() + "\nNo hay Response Code");
+                IBTomarFoto.setEnabled(true);
+                IBCerrarVentana.setEnabled(true);
             }
         }){
             @Override
@@ -279,7 +363,6 @@ public class AgregarPrenda extends Fragment {
             }
             @Override
             public byte[] getBody() throws AuthFailureError {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 imagen.compress(Bitmap.CompressFormat.JPEG, 90, baos);
                 byte[] imageBytes = baos.toByteArray();
                 try {
@@ -324,6 +407,7 @@ public class AgregarPrenda extends Fragment {
                 }
                 TVInfoFoto.setText("Imagen Válida");
                 IVFoto.setImageBitmap(imagen);
+                IBRecortarFoto.setVisibility(View.VISIBLE);
                 BTEnviar.setEnabled(true);
             }
         } catch (IOException ex) {
@@ -331,6 +415,8 @@ public class AgregarPrenda extends Fragment {
         } catch (JSONException ex) {
             Toast.makeText(this.getContext(), "Oops! Error al leer la respuesta del servidor", Toast.LENGTH_SHORT).show();
         }
+        IBTomarFoto.setEnabled(true);
+        IBCerrarVentana.setEnabled(true);
     }
 
     @Override
@@ -347,6 +433,7 @@ public class AgregarPrenda extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        cerrarFragment();
         mListener = null;
     }
 
