@@ -121,8 +121,8 @@ public class MostrarRopa extends Fragment {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<>();
-                params.put("Secret",PreferencesConfig.getInstancia(view.getContext()).getFromSharedPrefs("Secret") );
-                params.put("Categoria", categoria);
+                params.put("username",PreferencesConfig.getInstancia(view.getContext()).getFromSharedPrefs("Username") );
+                params.put("categoria", categoria);
                 return params;
             }
         };
