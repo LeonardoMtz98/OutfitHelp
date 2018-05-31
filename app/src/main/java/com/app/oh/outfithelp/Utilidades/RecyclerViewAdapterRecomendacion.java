@@ -8,10 +8,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.oh.outfithelp.R;
+import com.app.oh.outfithelp.Vistas.AgregarPrenda;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
 
 /**
  * Created by Grecia on 31/05/2018.
@@ -34,7 +38,16 @@ public class RecyclerViewAdapterRecomendacion extends RecyclerView.Adapter<Recyc
 
     @Override
     public void onBindViewHolder(RecyclerViewAdapterRecomendacion.ViewHolder holder, int position) {
-        holder.mostrarDatos(position);
+        try {
+            JSONObject recomendacion = lista.getJSONObject(position);
+            //String nombreArchivo = lista.get(position).replace("img/", "");
+            //File archivo = AgregarPrenda.crearArchivo(nombreArchivo, view.getContext());
+            //if (archivo.exists()) holder.mostrarDatos("file:" + archivo.getAbsolutePath());
+            //else holder.mostrarDatos(lista.get(position).toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -57,7 +70,7 @@ public class RecyclerViewAdapterRecomendacion extends RecyclerView.Adapter<Recyc
             TVUsername = itemView.findViewById(R.id.TVUsernamePR);
         }
 
-        public void mostrarDatos(int position) {
+        public void mostrarDatos(String url) {
             //Picasso.with(itemView.getContext()).load()
         }
     }

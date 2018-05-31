@@ -41,10 +41,14 @@ public class RecyclerViewAdapterRopa extends RecyclerView.Adapter<RecyclerViewAd
 
     @Override
     public void onBindViewHolder(RecyclerViewAdapterRopa.ViewHolder holder, int position) {
-        String nombreArchivo = direcciones.get(position).replace("img/", "");
-        File archivo = AgregarPrenda.crearArchivo(nombreArchivo, context);
-        if (archivo.exists()) holder.mostrarDatos("file:" + archivo.getAbsolutePath());
-        else holder.mostrarDatos(lista.get(position).toString());
+        if (direcciones == null) holder.mostrarDatos(lista.get(position).toString());
+        else {
+            String nombreArchivo = direcciones.get(position).replace("img/", "");
+            File archivo = AgregarPrenda.crearArchivo(nombreArchivo, context);
+            if (archivo.exists()) holder.mostrarDatos("file:" + archivo.getAbsolutePath());
+            else holder.mostrarDatos(lista.get(position).toString());
+        }
+
     }
 
     @Override

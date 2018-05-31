@@ -114,7 +114,7 @@ public class Recomendacion extends Fragment {
             public void onClick(View view) {
                 if (listaVestidos.isEmpty()) obtenerRopa(3);
                 else {
-                    adapter = new RecyclerViewAdapterRopa(listaVestidos);
+                    adapter = new RecyclerViewAdapterRopa(listaVestidos, null, null);
                     onClickVestido();
                     recyclerViewRecomendacion.setAdapter(adapter);
                 }
@@ -125,7 +125,7 @@ public class Recomendacion extends Fragment {
             public void onClick(View view) {
                 if (listaZapatos.isEmpty()) obtenerRopa(4);
                 else {
-                    adapter = new RecyclerViewAdapterRopa(listaZapatos);
+                    adapter = new RecyclerViewAdapterRopa(listaZapatos, null, null);
                     onClickZapatos();
                     recyclerViewRecomendacion.setAdapter(adapter);
                 }
@@ -137,7 +137,7 @@ public class Recomendacion extends Fragment {
             public void onClick(View view) {
                 if (listaPlayeras.isEmpty()) obtenerRopa(2);
                 else {
-                    adapter = new RecyclerViewAdapterRopa(listaPlayeras);
+                    adapter = new RecyclerViewAdapterRopa(listaPlayeras, null, null);
                     onClickPlayeras();
                     recyclerViewRecomendacion.setAdapter(adapter);
                 }
@@ -148,7 +148,7 @@ public class Recomendacion extends Fragment {
             public void onClick(View view) {
                 if (listaPantalones.isEmpty()) obtenerRopa(1);
                 else {
-                    adapter = new RecyclerViewAdapterRopa(listaPantalones);
+                    adapter = new RecyclerViewAdapterRopa(listaPantalones, null, null);
                     onClickPantalon();
                     recyclerViewRecomendacion.setAdapter(adapter);
                 }
@@ -253,19 +253,19 @@ public class Recomendacion extends Fragment {
                 }
             }
             if (categoria == 1){
-                adapter = new RecyclerViewAdapterRopa(listaPantalones);
+                adapter = new RecyclerViewAdapterRopa(listaPantalones, null, null);
                 onClickPantalon();
             }
             if (categoria == 2) {
-                adapter = new RecyclerViewAdapterRopa(listaPlayeras);
+                adapter = new RecyclerViewAdapterRopa(listaPlayeras, null, null);
                 onClickPlayeras();
             }
             if (categoria == 3){
-                adapter = new RecyclerViewAdapterRopa(listaVestidos);
+                adapter = new RecyclerViewAdapterRopa(listaVestidos, null, null);
                 onClickVestido();
             }
             if (categoria == 4){
-                adapter = new RecyclerViewAdapterRopa(listaZapatos);
+                adapter = new RecyclerViewAdapterRopa(listaZapatos, null, null);
                 onClickZapatos();
             }
             recyclerViewRecomendacion.setAdapter(adapter);
