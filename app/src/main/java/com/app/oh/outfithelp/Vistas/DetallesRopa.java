@@ -30,9 +30,12 @@ import com.app.oh.outfithelp.Utilidades.VolleySingleton;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class DetallesRopa extends Fragment {
@@ -48,6 +51,7 @@ public class DetallesRopa extends Fragment {
     private TextView textView;
     private TextView TVInfoFoto;
     private Uri uriFoto;
+    private File archivo;
     private int CROP = 1;
 
     public DetallesRopa() {
@@ -72,7 +76,7 @@ public class DetallesRopa extends Fragment {
         textView = view.findViewById(R.id.TVCerrarDetallesRopa);
 
         String nombreArchivo = nombreImagen.replace("img/", "");
-        final File archivo = AgregarPrenda.crearArchivo(nombreArchivo, this.getContext());
+        archivo = AgregarPrenda.crearArchivo(nombreArchivo, this.getContext());
         if (archivo.exists()) picasso.with(view.getContext()).load(archivo).into(imageView);
         else picasso.with(view.getContext()).load(imagen).into(imageView);
 
@@ -163,6 +167,13 @@ public class DetallesRopa extends Fragment {
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == CROP && resultCode == RESULT_OK) {
+            picasso.with(view.getContext()).load(archivo).into(imageView);
         }
     }
 

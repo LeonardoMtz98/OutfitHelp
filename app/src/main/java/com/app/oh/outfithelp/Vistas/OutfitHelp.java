@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.oh.outfithelp.R;
@@ -27,16 +28,16 @@ public class OutfitHelp extends AppCompatActivity
         MostrarRopa.OnFragmentInteractionListener, DetallesRopa.OnFragmentInteractionListener,
         AgregarPeticion.OnFragmentInteractionListener, Recomendacion.OnFragmentInteractionListener,
         AgregarPrenda.OnFragmentInteractionListener{
-    TextView TVEmail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_outfit_help);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        TVEmail = findViewById(R.id.TVEmail);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -50,11 +51,13 @@ public class OutfitHelp extends AppCompatActivity
         Fragment mifragment = new Inicio();
         getSupportFragmentManager().beginTransaction().add(R.id.content_outfit_help ,mifragment).commit();
 
-
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        //TVEmail.setText(PreferencesConfig.getInstancia(this).getFromSharedPrefs("Correo"));
+        View headerNav = navigationView.getHeaderView(0);
+        TextView TVUsername = headerNav.findViewById(R.id.TVUsername);
+        TVUsername.setText(PreferencesConfig.getInstancia(OutfitHelp.this).getFromSharedPrefs(SignIn.USERNAME));
+        TextView TVEmail = headerNav.findViewById(R.id.TVEmail123);
+        TVEmail.setText(PreferencesConfig.getInstancia(OutfitHelp.this).getFromSharedPrefs(SignIn.CORREO));
 
     }
 
@@ -68,7 +71,6 @@ public class OutfitHelp extends AppCompatActivity
             super.onBackPressed();
         }
     }
-
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -93,7 +95,6 @@ public class OutfitHelp extends AppCompatActivity
             //boolean end = cerrar.createDialog();
             if (cerrar.createDialog() == true)
             {
-
                 OutfitHelp.this.finish();
             }
         }
