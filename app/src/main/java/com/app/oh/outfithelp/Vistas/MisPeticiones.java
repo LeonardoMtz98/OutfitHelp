@@ -224,6 +224,12 @@ public class MisPeticiones extends Fragment {
                return false;
            }
        });
+       adapter.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+
+           }
+       });
        recyclerPeticiones.setAdapter(adapter);
    }
     public void dialogEliminarPeticion (final View vista)

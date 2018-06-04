@@ -29,6 +29,7 @@ import com.app.oh.outfithelp.Utilidades.PreferencesConfig;
 import com.app.oh.outfithelp.Utilidades.VolleySingleton;
 import com.squareup.picasso.Picasso;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -44,7 +45,6 @@ public class DetallesRopa extends Fragment {
     private View view;
     private String imagen;
     private String nombreImagen;
-    private Picasso picasso;
     private ImageView imageView;
     private ImageButton IBEditar;
     private ImageButton IBBorrar;
@@ -77,9 +77,8 @@ public class DetallesRopa extends Fragment {
 
         String nombreArchivo = nombreImagen.replace("img/", "");
         archivo = AgregarPrenda.crearArchivo(nombreArchivo, this.getContext());
-        if (archivo.exists()) picasso.with(view.getContext()).load(archivo).into(imageView);
-        else picasso.with(view.getContext()).load(imagen).into(imageView);
-
+        if (archivo.exists()) Picasso.get().load(archivo).into(imageView);
+        else Picasso.get().load(imagen).into(imageView);
         IBEditar = view.findViewById(R.id.IBEditar);
         IBEditar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,7 +172,7 @@ public class DetallesRopa extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == CROP && resultCode == RESULT_OK) {
-            picasso.with(view.getContext()).load(archivo).into(imageView);
+            Picasso.get().load(archivo).into(imageView);
         }
     }
 
