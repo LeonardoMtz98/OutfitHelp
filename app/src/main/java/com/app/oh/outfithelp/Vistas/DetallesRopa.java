@@ -173,7 +173,7 @@ public class DetallesRopa extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == CROP && resultCode == RESULT_OK) {
-            picasso.with(view.getContext()).load(archivo).into(imageView);
+            Picasso.get().load(archivo).into(imageView);
         }
     }
 
