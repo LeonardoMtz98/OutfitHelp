@@ -1,17 +1,22 @@
 package com.app.oh.outfithelp.Vistas;
 
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +29,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.app.oh.outfithelp.R;
 import com.app.oh.outfithelp.Utilidades.PreferencesConfig;
 import com.app.oh.outfithelp.Utilidades.RecyclerViewAdapterRopa;
+import com.app.oh.outfithelp.Utilidades.RecyclerViewAdapterRopaRecomendacion;
 import com.app.oh.outfithelp.Utilidades.VolleySingleton;
 import com.squareup.picasso.Picasso;
 
@@ -34,32 +40,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Recomendacion extends Fragment {
+public class CrearRecomendacion extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+    private View view;
     private static final String IP = "http://104.210.40.93/";
     private TextView TVFecha;
     private TextView TVEvento;
     private TextView TVDescripcion;
-    private TextView TVUsername;
-    private ImageView IVVestido;
-    private ImageView IVZapatos;
-    private ImageView IVPlayera;
-    private ImageView IVPantalon;
-    private Button BTCancelarR, BTEnviarR;
+    //private TextView TVUsername;
+    private ImageButton IBVestido;
+    private ImageButton IBZapatos;
+    private ImageButton IBCamisa;
+    private ImageButton IBPantalon;
+    private LinearLayout LYPrueba;
+    private ImageButton IBView;
+    private Dialog dVer;
+    private Button BTCancelar; //, BTEnviarR;
     private RecyclerView recyclerViewRecomendacion;
-    private View view;
-    private  String Fecha, Evento, Descripcion, Username, PkPeticion;
-    private String Vestido = " ", Playera = " ", Pantalon = " ", Zapatos = " ";
-    private int Peticion;
-    RecyclerViewAdapterRopa adapter;
+    private String Fecha, Evento, Descripcion, Username, PkPeticion;
+    private String Vestido = " ", Camisa = " ", Pantalon = " ", Zapatos = " ";
+    RecyclerViewAdapterRopaRecomendacion adapter;
     private ArrayList<String> listaVestidos;
     private ArrayList<String> listaZapatos;
-    private ArrayList<String> listaPlayeras;
+    private ArrayList<String> listaCamisas;
     private ArrayList<String> listaPantalones;
-    private HashMap<String, Integer> HashRopa;
 
-    public Recomendacion() {
+    public CrearRecomendacion() {
         // Required empty public constructor
     }
 
@@ -79,95 +86,122 @@ public class Recomendacion extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_recomendacion, container, false);
-        //Peticion = Integer.parseInt(PkPeticion);
-        TVUsername = view.findViewById(R.id.TVUsernameR);
-        TVFecha = view.findViewById(R.id.TVFechaR);
-        TVEvento = view.findViewById(R.id.TVTipoDeEventoR);
-        TVDescripcion = view.findViewById(R.id.TVDescripcionR);
-        IVVestido = view.findViewById(R.id.IVVestidoR);
-        IVZapatos = view.findViewById(R.id.IVZapatosR);
-        IVPlayera = view.findViewById(R.id.IVPlayeraR);
-        IVPantalon = view.findViewById(R.id.IVPantalonR);
-        BTCancelarR = view.findViewById(R.id.BTCancelarR);
-        BTEnviarR = view.findViewById(R.id.BTEnviarR);
+        view = inflater.inflate(R.layout.fragment_crear_recomendacion, container, false);
+        //TVUsername = view.findViewById(R.id.TVUsernameR);
+        TVFecha = view.findViewById(R.id.TVFechaCR);
+        TVEvento = view.findViewById(R.id.TVEventoCR);
+        TVDescripcion = view.findViewById(R.id.TVDescripcionCR);
+        IBCamisa = view.findViewById(R.id.IBCamisaCR);
+        IBPantalon = view.findViewById(R.id.IBPantalonCR);
+        IBVestido = view.findViewById(R.id.IBVestidoCR);
+        IBZapatos = view.findViewById(R.id.IBZapatosCR);
+        BTCancelar = view.findViewById(R.id.BTCAncelarCR);
+        IBView = view.findViewById(R.id.IBViewCR);
         listaVestidos = new ArrayList<>();
         listaZapatos = new ArrayList<>();
-        listaPlayeras = new ArrayList<>();
+        listaCamisas = new ArrayList<>();
         listaPantalones = new ArrayList<>();
         recyclerViewRecomendacion = view.findViewById(R.id.RVCrearRecomendacion);
-        recyclerViewRecomendacion.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        BTCancelarR.setOnClickListener(new View.OnClickListener() {
+        recyclerViewRecomendacion.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
+        BTCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getFragmentManager().beginTransaction().remove(Recomendacion.this).commit();
+                getFragmentManager().beginTransaction().remove(CrearRecomendacion.this).commit();
             }
         });
-        BTEnviarR.setOnClickListener(new View.OnClickListener() {
+        IBView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                enviar();
+                dialogVer();
             }
         });
-        IVVestido.setOnClickListener(new View.OnClickListener() {
+        IBVestido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (listaVestidos.isEmpty()) obtenerRopa(3);
                 else {
-                    adapter = new RecyclerViewAdapterRopa(listaVestidos, null, null);
+                    adapter = new RecyclerViewAdapterRopaRecomendacion(listaVestidos);
                     onClickVestido();
                     recyclerViewRecomendacion.setAdapter(adapter);
                 }
             }
         });
-        IVZapatos.setOnClickListener(new View.OnClickListener() {
+        IBZapatos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (listaZapatos.isEmpty()) obtenerRopa(4);
                 else {
-                    adapter = new RecyclerViewAdapterRopa(listaZapatos, null, null);
+                    adapter = new RecyclerViewAdapterRopaRecomendacion(listaZapatos);
                     onClickZapatos();
                     recyclerViewRecomendacion.setAdapter(adapter);
                 }
 
             }
         });
-        IVPlayera.setOnClickListener(new View.OnClickListener() {
+        IBCamisa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (listaPlayeras.isEmpty()) obtenerRopa(2);
+                if (listaCamisas.isEmpty()) obtenerRopa(2);
                 else {
-                    adapter = new RecyclerViewAdapterRopa(listaPlayeras, null, null);
-                    onClickPlayeras();
+                    adapter = new RecyclerViewAdapterRopaRecomendacion(listaCamisas);
+                    onClickCamisa();
                     recyclerViewRecomendacion.setAdapter(adapter);
                 }
             }
         });
-        IVPantalon.setOnClickListener(new View.OnClickListener() {
+        IBPantalon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (listaPantalones.isEmpty()) obtenerRopa(1);
                 else {
-                    adapter = new RecyclerViewAdapterRopa(listaPantalones, null, null);
+                    adapter = new RecyclerViewAdapterRopaRecomendacion(listaPantalones);
                     onClickPantalon();
                     recyclerViewRecomendacion.setAdapter(adapter);
                 }
-
             }
         });
-        TVUsername.setText(Username);
+        //TVUsername.setText(Username);
         TVFecha.setText(Fecha);
         TVEvento.setText(Evento);
         TVDescripcion.setText(Descripcion);
-
         return view;
     }
+    public void dialogVer ()
+    {
+        dVer = new Dialog(view.getContext());
+        dVer.setContentView(R.layout.dialog_ver_recomendacion);
+        ImageView IVVestido = dVer.findViewById(R.id.IVVestidoVR);
+        ImageView IVZapatos = dVer.findViewById(R.id.IVZapatosVR);
+        ImageView IVCamisa = dVer.findViewById(R.id.IVCamisaVR);
+        ImageView IVPantalon = dVer.findViewById(R.id.IVPantalonVR);
+        ImageButton IBCancelar = dVer.findViewById(R.id.IBCancelarVR);
+        ImageButton IBEnviar = dVer.findViewById(R.id.IBEnviarVR);
 
+        if(!Vestido.equals(" ")) Picasso.get().load(Vestido).into(IVVestido);
+        if(!Zapatos.equals(" ")) Picasso.get().load(Zapatos).into(IVZapatos);
+        if(!Camisa.equals(" ")) Picasso.get().load(Camisa).into(IVCamisa);
+        if(!Pantalon.equals(" ")) Picasso.get().load(Pantalon).into(IVPantalon);
+        IBCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dVer.dismiss();
+            }
+        });
+        IBEnviar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                enviar();
+            }
+        });
+        dVer.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dVer.show();
+        //Picasso.get().load("http://104.210.40.93/img/pantalon1").into(IVPantalon);
+    }
     public void enviar ()
     {
         boolean completo = true;
-        if (Pantalon.equals(" ") && Playera.equals(" ") && Vestido.equals(" ")) completo = false;
-        if (!Pantalon.equals(" ") && Playera.equals(" ") && Vestido.equals(" ")) completo = false;
+        if (Pantalon.equals(" ") && Camisa.equals(" ") && Vestido.equals(" ")) completo = false;
+        if (!Pantalon.equals(" ") && Camisa.equals(" ") && Vestido.equals(" ")) completo = false;
         if (Zapatos.equals(" ")) completo = false;
         if (completo){
             agregarRecomendacion();
@@ -196,7 +230,7 @@ public class Recomendacion extends Fragment {
                 params.put("secret", PreferencesConfig.getInstancia(view.getContext()).getFromSharedPrefs("Secret"));
                 params.put("peticion", PkPeticion);
                 params.put("pantalon", Pantalon);
-                params.put("playera", Playera);
+                params.put("playera", Camisa);
                 params.put("vestido", Vestido);
                 params.put("zapatos", Zapatos);
                 return params;
@@ -240,32 +274,32 @@ public class Recomendacion extends Fragment {
             if (ropa != null)
             {
                 if (categoria == 1) listaPantalones.add(IP + "img/clear.png");
-                if (categoria == 2) listaPlayeras.add(IP + "img/clear.png");
+                if (categoria == 2) listaCamisas.add(IP + "img/clear.png");
                 if (categoria == 3) listaVestidos.add(IP + "img/clear.png");
                 if (categoria == 4) listaZapatos.add(IP + "img/clear.png");
                 for (int i=0; i<ropa.length(); i++)
                 {
                     String y = IP + ropa.getString(i);
                     if (categoria == 1) listaPantalones.add(y);
-                    if (categoria == 2) listaPlayeras.add(y);
+                    if (categoria == 2) listaCamisas.add(y);
                     if (categoria == 3) listaVestidos.add(y);
                     if (categoria == 4) listaZapatos.add(y);
                 }
             }
             if (categoria == 1){
-                adapter = new RecyclerViewAdapterRopa(listaPantalones, null, null);
+                adapter = new RecyclerViewAdapterRopaRecomendacion(listaPantalones);
                 onClickPantalon();
             }
             if (categoria == 2) {
-                adapter = new RecyclerViewAdapterRopa(listaPlayeras, null, null);
-                onClickPlayeras();
+                adapter = new RecyclerViewAdapterRopaRecomendacion(listaCamisas);
+                onClickCamisa();
             }
             if (categoria == 3){
-                adapter = new RecyclerViewAdapterRopa(listaVestidos, null, null);
+                adapter = new RecyclerViewAdapterRopaRecomendacion(listaVestidos);
                 onClickVestido();
             }
             if (categoria == 4){
-                adapter = new RecyclerViewAdapterRopa(listaZapatos, null, null);
+                adapter = new RecyclerViewAdapterRopaRecomendacion(listaZapatos);
                 onClickZapatos();
             }
             recyclerViewRecomendacion.setAdapter(adapter);
@@ -279,33 +313,19 @@ public class Recomendacion extends Fragment {
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vista) {
-
-                if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0) {
-                    Picasso.get().load(R.drawable.ic_pantalon_hombre).into(IVPantalon);
-                    Pantalon = " ";
-                }
-                else{
-                    Pantalon = listaPantalones.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
-                    Picasso.get().load(Pantalon).into(IVPantalon);
-                }
+                if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0) Pantalon = " ";
+                else Pantalon = listaPantalones.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
             }
         });
     }
 
-    public void onClickPlayeras()
+    public void onClickCamisa()
     {
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vista) {
-                if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0)
-                {
-                    Picasso.get().load(R.drawable.ic_top_mujer).into(IVPlayera);
-                    Playera = " ";
-                }
-                else {
-                    Playera = listaPlayeras.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
-                    Picasso.get().load(Playera).into(IVPlayera);
-                }
+                if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0) Camisa = " ";
+                else Camisa = listaCamisas.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
             }
         });
     }
@@ -315,14 +335,8 @@ public class Recomendacion extends Fragment {
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vista) {
-                    if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0) {
-                        Picasso.get().load(R.drawable.ic_vestido).into(IVVestido);
-                        Vestido = " ";
-                    }
-                    else {
-                        Vestido = listaVestidos.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
-                        Picasso.get().load(Vestido).into(IVVestido);
-                    }
+                if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0) Vestido = " ";
+                else Vestido = listaVestidos.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
             }
         });
     }
@@ -332,14 +346,8 @@ public class Recomendacion extends Fragment {
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vista) {
-                if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0){
-                    Picasso.get().load(R.drawable.ic_zapatos_hombre).into(IVZapatos);
-                    Zapatos = " ";
-                }
-                else {
-                    Zapatos = listaZapatos.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
-                    Picasso.get().load(Zapatos).into(IVZapatos);
-                }
+                if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0) Zapatos = " ";
+                else Zapatos = listaZapatos.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
             }
         });
     }

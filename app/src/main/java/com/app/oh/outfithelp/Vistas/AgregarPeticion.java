@@ -163,7 +163,7 @@ public class AgregarPeticion extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View vista, int seleccion, long l) {
                 String url = IP + listaAvatares.get(seleccion);
-                Picasso.with(view.getContext()).load(url).into(IVAvatarAgregarPeticion);
+                Picasso.get().load(url).into(IVAvatarAgregarPeticion);
                 avatarSeleccionado = seleccion;
             }
 

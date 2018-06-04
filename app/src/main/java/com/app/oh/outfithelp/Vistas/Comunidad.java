@@ -192,9 +192,9 @@ public class Comunidad extends Fragment {
         bundle.putString("Descripcion", listaPeticiones[seleccion][3]);
         bundle.putString("Username", listaPeticiones[seleccion][4]);
         bundle.putString("PkPeticion", listaPeticiones[seleccion][5]);
-        Fragment miFragment = new Recomendacion();
+        Fragment miFragment = new CrearRecomendacion();
         miFragment.setArguments(bundle);
-        getFragmentManager().beginTransaction().replace(R.id.LYComunidad, miFragment).commit();
+        getFragmentManager().beginTransaction().add(R.id.LYComunidad, miFragment).commit();
     }
 
     public void onButtonPressed(Uri uri) {

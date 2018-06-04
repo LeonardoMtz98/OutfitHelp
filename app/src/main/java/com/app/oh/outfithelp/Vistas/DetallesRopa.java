@@ -41,7 +41,7 @@ public class DetallesRopa extends Fragment {
     private View view;
     private String imagen;
     private String nombreImagen;
-    private Picasso picasso;
+    //private Picasso picasso;
     private ImageView imageView;
     private ImageButton IBEditar;
     private ImageButton IBBorrar;
@@ -73,8 +73,8 @@ public class DetallesRopa extends Fragment {
 
         String nombreArchivo = nombreImagen.replace("img/", "");
         final File archivo = AgregarPrenda.crearArchivo(nombreArchivo, this.getContext());
-        if (archivo.exists()) picasso.with(view.getContext()).load(archivo).into(imageView);
-        else picasso.with(view.getContext()).load(imagen).into(imageView);
+        if (archivo.exists()) Picasso.get().load(archivo).into(imageView);
+        else Picasso.get().load(imagen).into(imageView);
 
         IBEditar = view.findViewById(R.id.IBEditar);
         IBEditar.setOnClickListener(new View.OnClickListener() {
