@@ -281,12 +281,12 @@ public class Recomendacion extends Fragment {
             public void onClick(View vista) {
 
                 if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0) {
-                    Picasso.with(view.getContext()).load(R.drawable.ic_pantalon_hombre).into(IVPantalon);
+                    Picasso.get().load(R.drawable.ic_pantalon_hombre).fit().into(IVPantalon);
                     Pantalon = " ";
                 }
                 else{
                     Pantalon = listaPantalones.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
-                    Picasso.with(view.getContext()).load(Pantalon).into(IVPantalon);
+                    Picasso.get().load(Pantalon).fit().into(IVPantalon);
                 }
             }
         });
@@ -299,12 +299,12 @@ public class Recomendacion extends Fragment {
             public void onClick(View vista) {
                 if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0)
                 {
-                    Picasso.with(view.getContext()).load(R.drawable.ic_top_mujer).into(IVPlayera);
+                    Picasso.get().load(R.drawable.ic_top_mujer).fit().into(IVPlayera);
                     Playera = " ";
                 }
                 else {
                     Playera = listaPlayeras.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
-                    Picasso.with(view.getContext()).load(Playera).into(IVPlayera);
+                    Picasso.get().load(Playera).fit().into(IVPlayera);
                 }
             }
         });
@@ -316,12 +316,12 @@ public class Recomendacion extends Fragment {
             @Override
             public void onClick(View vista) {
                     if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0) {
-                        Picasso.with(view.getContext()).load(R.drawable.ic_vestido).into(IVVestido);
+                        Picasso.get().load(R.drawable.ic_vestido).fit().into(IVVestido);
                         Vestido = " ";
                     }
                     else {
                         Vestido = listaVestidos.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
-                        Picasso.with(view.getContext()).load(Vestido).into(IVVestido);
+                        Picasso.get().load(Vestido).fit().into(IVVestido);
                     }
             }
         });
@@ -333,12 +333,12 @@ public class Recomendacion extends Fragment {
             @Override
             public void onClick(View vista) {
                 if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0){
-                    Picasso.with(view.getContext()).load(R.drawable.ic_zapatos_hombre).into(IVZapatos);
+                    Picasso.get().load(R.drawable.ic_zapatos_hombre).fit().into(IVZapatos);
                     Zapatos = " ";
                 }
                 else {
                     Zapatos = listaZapatos.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
-                    Picasso.with(view.getContext()).load(Zapatos).into(IVZapatos);
+                    Picasso.get().load(Zapatos).fit().into(IVZapatos);
                 }
             }
         });

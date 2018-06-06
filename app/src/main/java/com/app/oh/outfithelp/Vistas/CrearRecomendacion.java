@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -313,8 +314,14 @@ public class CrearRecomendacion extends Fragment {
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vista) {
-                if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0) Pantalon = " ";
-                else Pantalon = listaPantalones.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
+                if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0){
+                    Pantalon = " ";
+                    IBPantalon.setColorFilter(Color.BLACK, PorterDuff.Mode.LIGHTEN);
+                }
+                else{
+                    Pantalon = listaPantalones.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
+                    IBPantalon.setColorFilter(Color.parseColor("#76D7C4"), PorterDuff.Mode.LIGHTEN);
+                }
             }
         });
     }
@@ -324,8 +331,14 @@ public class CrearRecomendacion extends Fragment {
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vista) {
-                if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0) Camisa = " ";
-                else Camisa = listaCamisas.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
+                if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0){
+                    Camisa = " ";
+                    IBCamisa.setColorFilter(Color.BLACK, PorterDuff.Mode.LIGHTEN);
+                }
+                else {
+                    Camisa = listaCamisas.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
+                    IBCamisa.setColorFilter(Color.parseColor("#76D7C4"), PorterDuff.Mode.LIGHTEN);
+                }
             }
         });
     }
@@ -335,8 +348,14 @@ public class CrearRecomendacion extends Fragment {
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vista) {
-                if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0) Vestido = " ";
-                else Vestido = listaVestidos.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
+                if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0){
+                    Vestido = " ";
+                    IBVestido.setColorFilter(Color.BLACK, PorterDuff.Mode.LIGHTEN);
+                }
+                else{
+                    Vestido = listaVestidos.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
+                    IBVestido.setColorFilter(Color.parseColor("#76D7C4"), PorterDuff.Mode.LIGHTEN);
+                }
             }
         });
     }
@@ -346,8 +365,14 @@ public class CrearRecomendacion extends Fragment {
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vista) {
-                if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0) Zapatos = " ";
-                else Zapatos = listaZapatos.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
+                if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0){
+                    Zapatos = " ";
+                    IBZapatos.setColorFilter(Color.BLACK, PorterDuff.Mode.LIGHTEN);
+                }
+                else{
+                    Zapatos = listaZapatos.get(recyclerViewRecomendacion.getChildAdapterPosition(vista));
+                    IBZapatos.setColorFilter(Color.parseColor("#76D7C4"), PorterDuff.Mode.LIGHTEN);
+                }
             }
         });
     }

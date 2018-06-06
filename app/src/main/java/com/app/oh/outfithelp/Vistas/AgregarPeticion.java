@@ -30,6 +30,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.app.oh.outfithelp.R;
+import com.app.oh.outfithelp.Utilidades.Localizacion;
 import com.app.oh.outfithelp.Utilidades.PreferencesConfig;
 import com.app.oh.outfithelp.Utilidades.VolleySingleton;
 import com.squareup.picasso.Picasso;
@@ -121,6 +122,7 @@ public class AgregarPeticion extends Fragment {
         hora = calendar.get(Calendar.HOUR_OF_DAY);
         minuto = calendar.get(Calendar.MINUTE);
         IBReloj.setEnabled(false);
+        Localizacion.getInstancia(view.getContext()).getLocalizacion();
         obtenerAvatares();
         obtenerTiposDeEvento();
         TVCerrarAgregarPeticion.setOnClickListener(new View.OnClickListener() {
@@ -163,7 +165,7 @@ public class AgregarPeticion extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View vista, int seleccion, long l) {
                 String url = IP + listaAvatares.get(seleccion);
-                Picasso.with(view.getContext()).load(url).into(IVAvatarAgregarPeticion);
+                Picasso.get().load(url).fit().into(IVAvatarAgregarPeticion);
                 avatarSeleccionado = seleccion;
             }
 
@@ -303,9 +305,10 @@ public class AgregarPeticion extends Fragment {
         StringRequest agregarPeticion = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                /*if (!response.equals("")){
-                    Toast.makeText(view.getContext(), "Error al agregar peticion", Toast.LENGTH_SHORT).show();
-                }*/
+                String respuesta = response.substring(67, response.length()-9);
+                if (!response.contains("Exito")){
+                    Toast.makeText(view.getContext(), "Oops! Error de autentificacion", Toast.LENGTH_SHORT).show();
+                }
             }
         }, new Response.ErrorListener() {
             @Override

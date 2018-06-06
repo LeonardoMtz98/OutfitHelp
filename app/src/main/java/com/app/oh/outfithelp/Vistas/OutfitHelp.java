@@ -27,7 +27,8 @@ public class OutfitHelp extends AppCompatActivity
         MisPeticiones.OnFragmentInteractionListener, Favoritos.OnFragmentInteractionListener,
         MostrarRopa.OnFragmentInteractionListener, DetallesRopa.OnFragmentInteractionListener,
         AgregarPeticion.OnFragmentInteractionListener, Recomendacion.OnFragmentInteractionListener,
-        AgregarPrenda.OnFragmentInteractionListener{
+        AgregarPrenda.OnFragmentInteractionListener, CrearRecomendacion.OnFragmentInteractionListener,
+        DetallesPeticion.OnFragmentInteractionListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

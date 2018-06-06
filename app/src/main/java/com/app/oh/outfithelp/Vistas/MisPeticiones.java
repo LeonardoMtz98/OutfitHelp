@@ -226,12 +226,27 @@ public class MisPeticiones extends Fragment {
        });
        adapter.setOnClickListener(new View.OnClickListener() {
            @Override
-           public void onClick(View view) {
-
+           public void onClick(View vista) {
+                abrirDetallesPeticion(vista);
            }
        });
        recyclerPeticiones.setAdapter(adapter);
    }
+
+   public void abrirDetallesPeticion(View vista)
+   {
+       Bundle bundle = new Bundle();
+       bundle.putString("Avatar", listaPeticiones[recyclerPeticiones.getChildAdapterPosition(vista)][0]);
+       bundle.putString("Fecha", listaPeticiones[recyclerPeticiones.getChildAdapterPosition(vista)][1]);
+       bundle.putString("Evento", listaPeticiones[recyclerPeticiones.getChildAdapterPosition(vista)][2]);
+       bundle.putString("Descripcion", listaPeticiones[recyclerPeticiones.getChildAdapterPosition(vista)][3]);
+       bundle.putString("PkPeticion", listaPeticiones[recyclerPeticiones.getChildAdapterPosition(vista)][4]);
+       Fragment FragmentDetalles;
+       FragmentDetalles = new DetallesPeticion();
+       FragmentDetalles.setArguments(bundle);
+       getFragmentManager().beginTransaction().add(R.id.LYMisPeticiones, FragmentDetalles).commit();
+   }
+
     public void dialogEliminarPeticion (final View vista)
     {
         final String PkPeticion = listaPeticiones[recyclerPeticiones.getChildAdapterPosition(vista)][4];

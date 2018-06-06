@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.app.oh.outfithelp.R;
+import com.app.oh.outfithelp.Utilidades.Localizacion;
 import com.app.oh.outfithelp.Utilidades.PreferencesConfig;
 import com.app.oh.outfithelp.Utilidades.RecyclerViewAdapterComunidad;
 import com.app.oh.outfithelp.Utilidades.RecyclerViewAdapterPeticiones;
@@ -59,7 +60,7 @@ public class Comunidad extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_comunidad, container, false);
-        //listaPeticiones = new ArrayList<>();
+        Localizacion.getInstancia(view.getContext()).getLocalizacion();
         Eventos = new HashMap<>();
         Avatares = new HashMap<>();
         bundle = new Bundle();
@@ -192,7 +193,7 @@ public class Comunidad extends Fragment {
         bundle.putString("Descripcion", listaPeticiones[seleccion][3]);
         bundle.putString("Username", listaPeticiones[seleccion][4]);
         bundle.putString("PkPeticion", listaPeticiones[seleccion][5]);
-        Fragment miFragment = new Recomendacion();
+        Fragment miFragment = new CrearRecomendacion();
         miFragment.setArguments(bundle);
         getFragmentManager().beginTransaction().replace(R.id.LYComunidad, miFragment).commit();
     }

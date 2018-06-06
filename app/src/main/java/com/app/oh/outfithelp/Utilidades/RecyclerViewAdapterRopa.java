@@ -77,7 +77,7 @@ public class RecyclerViewAdapterRopa extends RecyclerView.Adapter<RecyclerViewAd
         }
 
         public void mostrarDatos(String url) {
-            Picasso.with(view.getContext()).load(url).into(imagen);
+            Picasso.get().load(url).fit().into(imagen);
         }
     }
 }
