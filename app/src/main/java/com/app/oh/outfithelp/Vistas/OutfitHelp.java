@@ -179,10 +179,8 @@ public class OutfitHelp extends AppCompatActivity
             if (cerrar.createDialog() == true)
             {
                 OutfitHelp.this.finish();
-                System.exit(0);
             }
         }
-
         if (seleccion)
         {
             getSupportFragmentManager().beginTransaction().replace(R.id.content_outfit_help, mifragment).commit();

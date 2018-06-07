@@ -331,11 +331,16 @@ public class AgregarPeticion extends Fragment {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<>();
-                params.put("avatar", ""+avatarSeleccionado);
-                params.put("tipoDeEvento", ""+evento);
-                params.put("date", date);
-                params.put("descripcion", ETDescripcionAgregarPeticion.getText().toString());
-                params.put("secret", PreferencesConfig.getInstancia(view.getContext()).getFromSharedPrefs("Secret"));
+                try {
+                    params.put("avatar", "" + avatarSeleccionado);
+                    params.put("tipoDeEvento", "" + evento);
+                    params.put("date", date);
+
+                    params.put("descripcion", new String(ETDescripcionAgregarPeticion.getText().toString().getBytes(), "UTF-8"));
+                    params.put("secret", PreferencesConfig.getInstancia(view.getContext()).getFromSharedPrefs("Secret"));
+                }catch (UnsupportedEncodingException e) {
+                    Toast.makeText(getContext(), "Oops! Error al codificar descripcion", Toast.LENGTH_SHORT).show();
+                }
                 return params;
             }
         };
