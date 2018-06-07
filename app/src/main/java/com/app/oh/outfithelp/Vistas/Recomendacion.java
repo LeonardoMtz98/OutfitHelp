@@ -281,7 +281,7 @@ public class Recomendacion extends Fragment {
             public void onClick(View vista) {
 
                 if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0) {
-                    Picasso.with(view.getContext()).load(R.drawable.ic_pantalon_hombre).into(IVPantalon);
+                    Picasso.get().load(R.drawable.ic_pantalon_hombre).into(IVPantalon);
                     Pantalon = " ";
                 }
                 else{
@@ -299,7 +299,7 @@ public class Recomendacion extends Fragment {
             public void onClick(View vista) {
                 if (recyclerViewRecomendacion.getChildAdapterPosition(vista) == 0)
                 {
-                    Picasso.with(view.getContext()).load(R.drawable.ic_top_mujer).into(IVPlayera);
+                    Picasso.get().load(R.drawable.ic_top_mujer).into(IVPlayera);
                     Playera = " ";
                 }
                 else {
