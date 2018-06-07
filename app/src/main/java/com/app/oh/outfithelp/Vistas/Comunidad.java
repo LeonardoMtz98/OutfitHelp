@@ -1,6 +1,9 @@
 package com.app.oh.outfithelp.Vistas;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -188,6 +191,49 @@ public class Comunidad extends Fragment {
     public void abrirRecomendacion(View vista)
     {
         int seleccion =  recyclerComunidad.getChildAdapterPosition(vista);
+        checarRecomendaciones(seleccion);
+
+    }
+
+    public void checarRecomendaciones (final int seleccion)
+    {
+        String url = IP + "WebService.asmx/checarRecomendacionesDiarias";
+        StringRequest recomendacionesDiarias = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String respuesta = response.substring(67, response.length()-9);
+                if(respuesta.equals("Disponibles")) abrirCrearRecomendacion(seleccion);
+                else{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                    builder.setMessage("Has llegado a tu limite de recomendaciones diarias");
+                    builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.create();
+                    builder.show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(view.getContext(), "Oops! Error al obtener peticion", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", PreferencesConfig.getInstancia(view.getContext()).getFromSharedPrefs("Username"));
+                return params;
+            }
+        };
+        VolleySingleton.getInstancia(view.getContext()).agregarACola(recomendacionesDiarias);
+    }
+
+    public void abrirCrearRecomendacion(int seleccion)
+    {
         bundle.putString("Fecha", listaPeticiones[seleccion][1]);
         bundle.putString("Evento", listaPeticiones[seleccion][2]);
         bundle.putString("Descripcion", listaPeticiones[seleccion][3]);

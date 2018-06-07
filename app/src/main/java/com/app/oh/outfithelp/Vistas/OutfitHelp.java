@@ -98,7 +98,7 @@ public class OutfitHelp extends AppCompatActivity
                 consultarDatos();
             }else {
                 TVNivel.setText(PreferencesConfig.getInstancia(this).getFromSharedPrefs(NIVEL));
-                TVIndice.setText(PreferencesConfig.getInstancia(this).getFromSharedPrefs(INDICE));
+                TVIndice.setText("IndiceFashion:" + PreferencesConfig.getInstancia(this).getFromSharedPrefs(INDICE));
             }
         }else consultarDatos();
     }
@@ -108,6 +108,7 @@ public class OutfitHelp extends AppCompatActivity
             @Override
             public void onResponse(String response) {
                 String respuesta = response.substring(67, response.length() - 9);
+                PreferencesConfig.getInstancia(OutfitHelp.this).agregarASharedPrefs(NIVEL, respuesta);
                 TVNivel.setText(respuesta);
             }
         }, new Response.ErrorListener() {
@@ -127,7 +128,8 @@ public class OutfitHelp extends AppCompatActivity
             @Override
             public void onResponse(String response) {
                 String respuesta = response.substring(67, response.length() - 9);
-                TVIndice.setText(respuesta);
+                PreferencesConfig.getInstancia(OutfitHelp.this).agregarASharedPrefs(INDICE, respuesta);
+                TVIndice.setText("IndiceFashion: " + respuesta);
             }
         }, new Response.ErrorListener() {
             @Override

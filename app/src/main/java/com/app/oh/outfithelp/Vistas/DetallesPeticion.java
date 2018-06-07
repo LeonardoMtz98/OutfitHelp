@@ -146,8 +146,37 @@ public class DetallesPeticion extends Fragment {
         TextView TVCerrar = Recomendacion.findViewById(R.id.TVCerrarMR);
         final CheckBox CBLike = Recomendacion.findViewById(R.id.CBLikeMR);
         final CheckBox CBFavoritos = Recomendacion.findViewById(R.id.CBFavoritoMR);
+        String url = IP + "WebService.asmx/getStatusRecomendacion";
+
         try {
-            JSONObject datos = recomendaciones.getJSONObject(RVRecomendaciones.getChildAdapterPosition(vista));
+            final JSONObject datos = recomendaciones.getJSONObject(RVRecomendaciones.getChildAdapterPosition(vista));
+            final String recomendacion = datos.getString("recomendacion");
+            StringRequest status = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    String respuesta =  response.substring(67, response.length()-9);
+                    if(respuesta.equals("Guardada")){
+                        CBLike.setChecked(true);
+                        CBFavoritos.setChecked(true);
+                    }
+                    else if(respuesta.equals("Gustada")) CBLike.setChecked(true);
+                    else Toast.makeText(view.getContext(), "Oops! "+ respuesta, Toast.LENGTH_SHORT).show();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(view.getContext(), "Oops! error al obtener estado", Toast.LENGTH_SHORT).show();
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("secret", PreferencesConfig.getInstancia(view.getContext()).getFromSharedPrefs("Secret"));
+                    params.put("recomendacion", recomendacion);
+                    return params;
+                }
+            };
+            VolleySingleton.getInstancia(view.getContext()).agregarACola(status);
             Picasso.get().load(IP + datos.getString("vestido")).fit().into(IVVestido);
             Picasso.get().load(IP + datos.getString("zapatos")).fit().into(IVZapatos);
             Picasso.get().load(IP + datos.getString("camisa")).fit().into(IVCamisa);
