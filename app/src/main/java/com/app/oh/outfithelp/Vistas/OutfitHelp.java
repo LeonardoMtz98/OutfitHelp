@@ -179,6 +179,7 @@ public class OutfitHelp extends AppCompatActivity
             if (cerrar.createDialog() == true)
             {
                 OutfitHelp.this.finish();
+                System.exit(0);
             }
         }
 

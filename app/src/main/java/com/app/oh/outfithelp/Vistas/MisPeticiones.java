@@ -36,6 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -182,6 +183,17 @@ public class MisPeticiones extends Fragment {
            @Override
            public void onErrorResponse(VolleyError error) {
                Toast.makeText(view.getContext(),"Oops! Error al cargar Peticiones", Toast.LENGTH_SHORT).show();
+               try {
+                   if (error.networkResponse != null) {
+                       if (error.networkResponse.data != null) {
+                           String resp = new String(error.networkResponse.data, "UTF-8");
+                           Log.e("VolleyError", error.toString());
+                           Log.d("Error net", resp);
+                       }
+                   }
+               } catch (UnsupportedEncodingException e) {
+                   e.printStackTrace();
+               }
            }
        }){
            @Override

@@ -9,14 +9,17 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
+import android.text.Layout;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +47,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.channels.InterruptedByTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,9 +72,15 @@ public class AgregarPrenda extends Fragment {
     private TextView TVTitulo;
     private ImageView IVFoto;
     private TextView TVInfoFoto;
+    private LinearLayout LYRotar;
+    private ImageButton IBRotarIzq;
+    private ImageButton IBRotarDer;
     private ImageButton IBTomarFoto;
     private ImageButton IBRecortarFoto;
+    private ImageButton IBValidar;
     private Button BTEnviar;
+    private FrameLayout LYEspera;
+    private TextView TVInfoCarga;
     private Uri uriFoto;
     private String DireccionFoto;
     public int CAMARA = 1;
@@ -106,6 +116,28 @@ public class AgregarPrenda extends Fragment {
         getTitulo();
         IVFoto = view.findViewById(R.id.IVFoto);
         TVInfoFoto = view.findViewById(R.id.TVInfoFoto);
+        LYRotar = view.findViewById(R.id.LYRotar);
+        LYRotar.setVisibility(View.GONE);
+        IBRotarIzq = view.findViewById(R.id.IBRotarIzq);
+        IBRotarIzq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Matrix matrix = new Matrix();
+                matrix.postRotate(-90);
+                imagen = Bitmap.createBitmap(imagen, 0, 0, imagen.getWidth(), imagen.getHeight(), matrix, true);
+                IVFoto.setImageBitmap(imagen);
+            }
+        });
+        IBRotarDer = view.findViewById(R.id.IBRotarDer);
+        IBRotarDer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Matrix matrix = new Matrix();
+                matrix.postRotate(90);
+                imagen = Bitmap.createBitmap(imagen, 0, 0, imagen.getWidth(), imagen.getHeight(), matrix, true);
+                IVFoto.setImageBitmap(imagen);
+            }
+        });
         IBTomarFoto = view.findViewById(R.id.IBTomarFoto);
         IBTomarFoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,14 +154,24 @@ public class AgregarPrenda extends Fragment {
             }
         });
         IBRecortarFoto.setVisibility(View.GONE);
+        IBValidar = view.findViewById(R.id.IBValidar);
+        IBValidar.setEnabled(false);
+        IBValidar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                validarImagen();
+            }
+        });
         BTEnviar = view.findViewById(R.id.BTEnviar);
-        BTEnviar.setEnabled(false);
         BTEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 sendPrenda();
             }
         });
+        BTEnviar.setVisibility(View.GONE);
+        LYEspera = view.findViewById(R.id.LYEspera);
+        TVInfoCarga = view.findViewById(R.id.TVInfoCarga);
         return view;
     }
 
@@ -192,10 +234,12 @@ public class AgregarPrenda extends Fragment {
     }
 
     private void sendPrenda() {
+        LYEspera.setVisibility(View.VISIBLE);
         TVInfoFoto.setText("Enviando...");
+        TVInfoCarga.setText("Enviando imagen...");
         IBCerrarVentana.setEnabled(false);
         IBTomarFoto.setEnabled(false);
-        imagen.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+        imagen.compress(Bitmap.CompressFormat.JPEG, 80, baos);
         final byte [] imagenEnBytes = baos.toByteArray();
         final String imagenEnString = Base64.encodeToString(imagenEnBytes, Base64.NO_WRAP);
         StringRequest peticionEnvioPrenda = new StringRequest(Request.Method.POST, OutfitHelp.url + "sendPrenda", new Response.Listener<String>() {
@@ -225,6 +269,7 @@ public class AgregarPrenda extends Fragment {
                     Toast.makeText(getContext(), "Oops! Error al leer la respuesta del servidor.", Toast.LENGTH_SHORT).show();
                     TVInfoFoto.setText("Indefinido si se subio o no");
                 }
+                LYEspera.setVisibility(View.GONE);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -253,6 +298,7 @@ public class AgregarPrenda extends Fragment {
                         if (imagen.exists()) imagen.delete();
                     }
                 }
+                LYEspera.setVisibility(View.GONE);
             }
         }) {
             @Override
@@ -306,15 +352,10 @@ public class AgregarPrenda extends Fragment {
         if (requestCode == CAMARA && resultCode == RESULT_OK) {
             try {
                 imagen = MediaStore.Images.Media.getBitmap(this.getContext().getContentResolver(), uriFoto);
-                Matrix matrix = new Matrix();
-                matrix.postRotate(90);
-                imagen = Bitmap.createBitmap(imagen, 0, 0, imagen.getWidth(), imagen.getHeight(), matrix, true);
                 IVFoto.setImageBitmap(imagen);
-                TVInfoFoto.setText("Validando...");
-                IBTomarFoto.setEnabled(false);
-                IBCerrarVentana.setEnabled(false);
-                validarImagen();
-
+                IBValidar.setEnabled(true);
+                LYRotar.setVisibility(View.VISIBLE);
+                IBRecortarFoto.setVisibility(View.GONE);
             } catch (IOException e) {
                 Toast.makeText(AgregarPrenda.this.getContext(), "Oops! Error obteniendo imagen", Toast.LENGTH_SHORT).show();
             }
@@ -330,6 +371,11 @@ public class AgregarPrenda extends Fragment {
     }
 
     private void validarImagen() {
+        IBCerrarVentana.setEnabled(false);
+        BTEnviar.setVisibility(View.GONE);
+        LYRotar.setEnabled(false);
+        LYEspera.setVisibility(View.VISIBLE);
+        TVInfoCarga.setText("Validando imagen...");
         final String SubKey = "b4ddd710c7904ae8acba1b6b9e9fd120";
         String URL = "https://westus.api.cognitive.microsoft.com/vision/v1.0/analyze?visualFeatures=Faces, Adult&language=en";
 
@@ -355,6 +401,10 @@ public class AgregarPrenda extends Fragment {
                 }
                 IBTomarFoto.setEnabled(true);
                 IBCerrarVentana.setEnabled(true);
+                LYRotar.setVisibility(View.GONE);
+                IBRecortarFoto.setVisibility(View.GONE);
+                IBValidar.setEnabled(true);
+                LYEspera.setVisibility(View.GONE);
             }
         }){
             @Override
@@ -369,7 +419,7 @@ public class AgregarPrenda extends Fragment {
             }
             @Override
             public byte[] getBody() throws AuthFailureError {
-                imagen.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+                imagen.compress(Bitmap.CompressFormat.JPEG, 80, baos);
                 byte[] imageBytes = baos.toByteArray();
                 try {
                     baos.close();
@@ -389,7 +439,10 @@ public class AgregarPrenda extends Fragment {
             JSONObject datosAdulto = Datos.getJSONObject("adult");
             if (datosAdulto.getBoolean("isAdultContent") && datosAdulto.getBoolean("isRacyContent")) {
                 TVInfoFoto.setText("Oh oh, Imagen inadecuada, intenta con otra");
-                BTEnviar.setEnabled(false);
+                BTEnviar.setVisibility(View.GONE);
+                IBValidar.setEnabled(false);
+                IBTomarFoto.setEnabled(true);
+                IBRecortarFoto.setVisibility(View.GONE);
             }
             else {
                 if (faces != null && faces.length() > 0) {
@@ -414,15 +467,18 @@ public class AgregarPrenda extends Fragment {
                 TVInfoFoto.setText("Imagen Válida");
                 IVFoto.setImageBitmap(imagen);
                 IBRecortarFoto.setVisibility(View.VISIBLE);
-                BTEnviar.setEnabled(true);
+                IBValidar.setVisibility(View.GONE);
+                BTEnviar.setVisibility(View.VISIBLE);
             }
         } catch (IOException ex) {
             Toast.makeText(this.getContext(), "Oops! Error al guardar imagen validada", Toast.LENGTH_SHORT).show();
         } catch (JSONException ex) {
             Toast.makeText(this.getContext(), "Oops! Error al leer la respuesta del servidor", Toast.LENGTH_SHORT).show();
         }
+        LYRotar.setVisibility(View.GONE);
         IBTomarFoto.setEnabled(true);
         IBCerrarVentana.setEnabled(true);
+        LYEspera.setVisibility(View.GONE);
     }
 
     @Override
@@ -442,17 +498,6 @@ public class AgregarPrenda extends Fragment {
         cerrarFragment();
         mListener = null;
     }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

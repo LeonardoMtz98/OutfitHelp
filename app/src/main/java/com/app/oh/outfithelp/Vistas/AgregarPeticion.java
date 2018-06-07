@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.sql.Date;
 import java.text.DateFormat;
@@ -305,7 +307,6 @@ public class AgregarPeticion extends Fragment {
         StringRequest agregarPeticion = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                String respuesta = response.substring(67, response.length()-9);
                 if (!response.contains("Exito")){
                     Toast.makeText(view.getContext(), "Oops! Error de autentificacion", Toast.LENGTH_SHORT).show();
                 }
@@ -314,6 +315,17 @@ public class AgregarPeticion extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(view.getContext(),"Oops! Error al enviar peticion",Toast.LENGTH_SHORT).show();
+                try {
+                    if (error.networkResponse != null) {
+                        if (error.networkResponse.data != null) {
+                            String resp = new String(error.networkResponse.data, "UTF-8");
+                            Log.e("VolleyError", error.toString());
+                            Log.d("Error net", resp);
+                        }
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         }) {
             @Override

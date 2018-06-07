@@ -69,7 +69,7 @@ public class RecyclerViewAdapterRopaRecomendacion extends RecyclerView.Adapter<R
         }
 
         public void mostrarDatos(String url) {
-            Picasso.get().load(url).fit().into(imagen);
+            Picasso.get().load(url).into(imagen);
         }
     }
 }

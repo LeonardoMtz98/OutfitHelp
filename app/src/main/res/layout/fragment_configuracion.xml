@@ -88,6 +88,18 @@
                     android:text="Mujer"/>
             </RadioGroup>
             <Button
+                android:id="@+id/BTGuardarCambio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryDark"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="10dp"
+                android:padding="5dp"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_gravity="center"
+                android:text="Guardar Cambio"/>
+            <Button
                 android:id="@+id/BTVerTyC"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -41,6 +41,7 @@ public class configuracion extends Fragment {
     private RadioGroup RGGenero;
     private RadioButton RBHombre;
     private RadioButton RBMujer;
+    private Button BTGuardarCambio;
     private Button BTVerTyC;
     private Button BTCambiarPass;
 
@@ -66,6 +67,13 @@ public class configuracion extends Fragment {
         TVCorreo.setText(PreferencesConfig.getInstancia(getContext()).getFromSharedPrefs(OutfitHelp.CORREO));
         RBHombre = view.findViewById(R.id.RBHombre);
         RBMujer = view.findViewById(R.id.RBMujer);
+        BTGuardarCambio = view.findViewById(R.id.BTGuardarCambio);
+        BTGuardarCambio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actualizarSexo();
+            }
+        });
         BTVerTyC = view.findViewById(R.id.BTVerTyC);
         BTVerTyC.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,18 +113,6 @@ public class configuracion extends Fragment {
             RBMujer.setChecked(false);
             RBHombre.setChecked(true);
         }
-        RBHombre.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                actualizarSexo();
-            }
-        });
-        RBMujer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                actualizarSexo();
-            }
-        });
         BTCambiarPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
