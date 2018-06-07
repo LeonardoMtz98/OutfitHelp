@@ -195,10 +195,10 @@ public class AgregarPrenda extends Fragment {
         TVInfoFoto.setText("Enviando...");
         IBCerrarVentana.setEnabled(false);
         IBTomarFoto.setEnabled(false);
-        imagen.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+        imagen.compress(Bitmap.CompressFormat.JPEG, 20, baos);
         final byte [] imagenEnBytes = baos.toByteArray();
         final String imagenEnString = Base64.encodeToString(imagenEnBytes, Base64.NO_WRAP);
-        StringRequest peticionEnvioPrenda = new StringRequest(Request.Method.POST, SignIn.url + "sendPrenda", new Response.Listener<String>() {
+        StringRequest peticionEnvioPrenda = new StringRequest(Request.Method.POST, OutfitHelp.url + "sendPrenda", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 JSONArray respuesta = null;
@@ -230,13 +230,12 @@ public class AgregarPrenda extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(AgregarPrenda.this.getContext(), "Oops! Error al enviar prenda", Toast.LENGTH_SHORT).show();
-                Log.e("VolleyError", error.toString());
                 try {
                     if (error.networkResponse != null) {
                         if (error.networkResponse.data != null) {
                             String resp = new String(error.networkResponse.data, "UTF-8");
+                            Log.e("VolleyError", error.toString());
                             Log.d("Error net", resp);
-                            Log.d("Secret:", PreferencesConfig.getInstancia(AgregarPrenda.this.getContext()).getFromSharedPrefs(SignIn.SECRET));
                         }
                     }
                 } catch (UnsupportedEncodingException e) {
@@ -259,7 +258,7 @@ public class AgregarPrenda extends Fragment {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                String secret = PreferencesConfig.getInstancia(AgregarPrenda.this.getContext()).getFromSharedPrefs(SignIn.SECRET);
+                String secret = PreferencesConfig.getInstancia(AgregarPrenda.this.getContext()).getFromSharedPrefs(OutfitHelp.SECRET);
                 params.put("secret", secret);
                 params.put("categoria", PkCategoria);
                 params.put("imagen", imagenEnString);
@@ -342,11 +341,18 @@ public class AgregarPrenda extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                NetworkResponse nw = error.networkResponse;
-                if (nw != null){
-                    TVInfoFoto.setText("Error: " + error.toString() + "\nResponse Code: " + nw.statusCode );
+                Toast.makeText(getContext(), "Oops! Error al validar la imagen", Toast.LENGTH_SHORT).show();
+                try {
+                    if (error.networkResponse != null) {
+                        if (error.networkResponse.data != null) {
+                            String resp = new String(error.networkResponse.data, "UTF-8");
+                            Log.e("VolleyError", error.toString());
+                            Log.d("Error net", resp);
+                        }
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
-                else TVInfoFoto.setText("Error: " + error.toString() + "\nNo hay Response Code");
                 IBTomarFoto.setEnabled(true);
                 IBCerrarVentana.setEnabled(true);
             }

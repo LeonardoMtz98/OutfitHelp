@@ -24,7 +24,16 @@
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:id="@+id/TVUsername"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+                android:id="@+id/TVNivel"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/TVIndice"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
     <TextView
         android:id="@+id/TVEmail123"
         android:layout_width="wrap_content"

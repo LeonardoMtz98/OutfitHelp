@@ -118,10 +118,10 @@ public class LogIn extends Activity {
             else {
                 String secret;
                 secret = Secret.getInstancia(LogIn.this).code(usuario.getString(1),pass);
-                PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs(SignIn.SECRET, secret);
-                PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs(SignIn.CORREO, email);
-                PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs(SignIn.SEXO, usuario.getString(2));
-                PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs(SignIn.USERNAME, usuario.getString(1));
+                PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs(OutfitHelp.SECRET, secret);
+                PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs(OutfitHelp.CORREO, email);
+                PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs(OutfitHelp.SEXO, usuario.getString(2));
+                PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs(OutfitHelp.USERNAME, usuario.getString(1));
                 Intent miIntent = new Intent(this, OutfitHelp.class);
                 startActivity(miIntent);
                 LogIn.this.finish();

@@ -58,7 +58,7 @@ public class RecyclerViewAdapterPeticiones extends RecyclerView.Adapter<Recycler
         }
 
         public void mostrarDatos(int position) {
-            Picasso.with(itemView.getContext()).load(lista[position][0]).into(avatar);
+            Picasso.get().load(lista[position][0]).into(avatar);
             fecha.setText(lista[position][1]);
             tipoDeEvento.setText(lista[position][2]);
             descripcion.setText(lista[position][3]);

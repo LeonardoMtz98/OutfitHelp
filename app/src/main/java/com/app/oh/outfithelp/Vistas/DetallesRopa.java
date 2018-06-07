@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ import com.app.oh.outfithelp.Utilidades.VolleySingleton;
 import com.squareup.picasso.Picasso;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -102,6 +104,10 @@ public class DetallesRopa extends Fragment {
         });
         return view;
     }
+    public void cerrar()
+    {
+        getFragmentManager().beginTransaction().remove(DetallesRopa.this).commit();
+    }
 
     private void recortar(File archivo) {
         uriFoto = FileProvider.getUriForFile(getContext(), "com.app.oh.outfithelp", archivo);
@@ -124,7 +130,11 @@ public class DetallesRopa extends Fragment {
         IBBorrar.setEnabled(false);
         IBEditar.setEnabled(false);
         nombreImagen = nombreImagen.replace("img/", "");
-        StringRequest peticionBorrarPrenda = new StringRequest(Request.Method.POST, SignIn.url + "borrarPrenda", new Response.Listener<String>() {
+        enviarBorrado();
+    }
+
+    private void enviarBorrado() {
+        StringRequest peticionBorrarPrenda = new StringRequest(Request.Method.POST, OutfitHelp.url + "borrarPrenda", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 String respuesta = response.substring(67, response.length() - 9);
@@ -151,7 +161,7 @@ public class DetallesRopa extends Fragment {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("secret", PreferencesConfig.getInstancia(DetallesRopa.this.getContext()).getFromSharedPrefs(SignIn.SECRET));
+                params.put("secret", PreferencesConfig.getInstancia(DetallesRopa.this.getContext()).getFromSharedPrefs(OutfitHelp.SECRET));
                 params.put("nombreImagen", getArguments().getString(MostrarRopa.DIRECCIONIMG, "0"));
                 return params;
             }
@@ -159,23 +169,63 @@ public class DetallesRopa extends Fragment {
         VolleySingleton.getInstancia(DetallesRopa.this.getContext()).agregarACola(peticionBorrarPrenda);
     }
 
-    public void cerrar()
-    {
-        getFragmentManager().beginTransaction().remove(DetallesRopa.this).commit();
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == CROP && resultCode == RESULT_OK) {
+            Picasso.get().load(archivo).into(imageView);
+            enviarEdicion();
+        }
     }
+
+    private void enviarEdicion() {
+        StringRequest peticionRecorte = new StringRequest(Request.Method.POST, OutfitHelp.url + "editarPrenda", new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(DetallesRopa.this.getContext(), "Oops! Error al editar prenda en el servidor", Toast.LENGTH_SHORT).show();
+                try {
+                    if (error.networkResponse != null) {
+                        if (error.networkResponse.data != null) {
+                            String resp = new String(error.networkResponse.data, "UTF-8");
+                            Log.e("VolleyError", error.toString());
+                            Log.d("Error net", resp);
+                        }
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                try {
+                    Bitmap imagen = MediaStore.Images.Media.getBitmap(DetallesRopa.this.getContext().getContentResolver(), uriFoto);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    imagen.compress(Bitmap.CompressFormat.JPEG, 85, baos);
+                    String imagenCodificada = Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP);
+
+                    params.put("secret", PreferencesConfig.getInstancia(DetallesRopa.this.getContext()).getFromSharedPrefs(OutfitHelp.SECRET));
+                    params.put("nombreImagen", nombreImagen);
+                    params.put("imagen", imagenCodificada);
+                } catch (IOException e) {
+                    Toast.makeText(DetallesRopa.this.getContext(), "Oops! Error obteniendo imagen recortada", Toast.LENGTH_SHORT).show();
+                }
+                return params;
+            }
+        };
+        VolleySingleton.getInstancia(this.getContext()).agregarACola(peticionRecorte);
+    }
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == CROP && resultCode == RESULT_OK) {
-            Picasso.get().load(archivo).into(imageView);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

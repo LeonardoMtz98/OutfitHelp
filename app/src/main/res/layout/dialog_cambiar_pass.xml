@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:background="@color/colorBlueDark"
+    android:paddingTop="30dp"
+    android:paddingBottom="10dp"
+    android:paddingLeft="50dp"
+    android:paddingRight="50dp">
+    <EditText
+        android:id="@+id/ETContraseña"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:textSize="24sp"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
+        android:hint="Contraseña Antigua"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_dark"
+        android:id="@+id/TVInfoPass"/>
+    <EditText
+        android:id="@+id/ETContraseñaNueva"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:textSize="24sp"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
+        android:hint="Contraseña Nueva"/>
+    <EditText
+        android:id="@+id/ETConfContraseñaNueva"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:textSize="24sp"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
+        android:hint="Confirmar Contraseña"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_dark"
+        android:id="@+id/TVInfoPassNueva"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorAccent"
+            android:text="Cancelar"
+            android:id="@+id/BTCancelarCambiarPass"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorAccent"
+            android:text="Aceptar"
+            android:id="@+id/BTAceptarCambiarPass"/>
+    </LinearLayout>
+
+</LinearLayout>

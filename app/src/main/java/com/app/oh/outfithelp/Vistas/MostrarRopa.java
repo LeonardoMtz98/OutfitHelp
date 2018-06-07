@@ -8,10 +8,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -28,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -115,13 +118,24 @@ public class MostrarRopa extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Toast.makeText(getContext(), "Oops! Error al obtener lista de imagenes", Toast.LENGTH_SHORT).show();
+                try {
+                    if (error.networkResponse != null) {
+                        if (error.networkResponse.data != null) {
+                            String resp = new String(error.networkResponse.data, "UTF-8");
+                            Log.e("VolleyError", error.toString());
+                            Log.d("Error net", resp);
+                        }
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<>();
-                params.put("username",PreferencesConfig.getInstancia(view.getContext()).getFromSharedPrefs(SignIn.USERNAME));
+                params.put("username",PreferencesConfig.getInstancia(view.getContext()).getFromSharedPrefs(OutfitHelp.USERNAME));
                 params.put("categoria", categoria);
                 return params;
             }
@@ -147,7 +161,6 @@ public class MostrarRopa extends Fragment {
                     direcciones.add(ropa.getString(i));
                 }
             }
-
             RecyclerViewAdapterRopa adapter = new RecyclerViewAdapterRopa(lista, direcciones, getContext());
             adapter.setOnClickListener(new View.OnClickListener() {
                 @Override

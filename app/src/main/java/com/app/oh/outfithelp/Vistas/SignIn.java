@@ -1,6 +1,8 @@
 package com.app.oh.outfithelp.Vistas;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -49,6 +51,7 @@ public class SignIn extends Activity {
     private TextView TVErrorEstado;
     private TextView TVUsername;
     private ImageButton IBTActualizarUsername;
+    private TextView TVTerminosYCondiciones;
     private Button BTRegistrarse;
     private TextView tvIniciaSesion;
     private HashMap<String, Integer> Paises;
@@ -56,11 +59,6 @@ public class SignIn extends Activity {
     private int GENERO_HOMBRE = 1;
     private int GENERO_MUJER = 0;
 
-    public static final String SECRET = "Secret";
-    public static final String CORREO = "Correo";
-    public static final String SEXO  = "Sexo";
-    public static final String USERNAME = "Username";
-    public static final String url = "http://104.210.40.93/WebService.asmx/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +79,37 @@ public class SignIn extends Activity {
         SpinnerEstados.setEnabled(false);
         TVUsername = findViewById(R.id.TVUsername);
         IBTActualizarUsername= findViewById(R.id.IBTActualizarUsername);
+        TVTerminosYCondiciones = findViewById(R.id.TVTerminosYCondiciones);
+        TVTerminosYCondiciones.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Dialog miD = new Dialog(SignIn.this);
+                miD.setContentView(R.layout.dialog_terminos_y_condiciones);
+                ImageButton IBCerrar = miD.findViewById(R.id.IBCerrarVentana);
+
+                miD.show();
+                IBCerrar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        miD.dismiss();
+                    }
+                });
+                final TextView TVTerminosYCondiciones = miD.findViewById(R.id.TVTerminosYCondiciones);
+                StringRequest peticionTyC = new StringRequest(Request.Method.POST, OutfitHelp.url + "getTyC", new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        String respuesta = response.substring(67, response.length()-9);
+                        TVTerminosYCondiciones.setText(respuesta);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(SignIn.this, "Oops! Error al obtener terminos y condiciones", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                VolleySingleton.getInstancia(SignIn.this).agregarACola(peticionTyC);
+            }
+        });
         BTRegistrarse = findViewById(R.id.BTRegistrarse);
         tvIniciaSesion = findViewById(R.id.TVIniciaSesion);
 
@@ -125,7 +154,7 @@ public class SignIn extends Activity {
     }
 
     private void llenarUsername() {
-        StringRequest peticionUsername = new StringRequest(Request.Method.POST, url + "crearUsername", new Response.Listener<String>() {
+        StringRequest peticionUsername = new StringRequest(Request.Method.POST, OutfitHelp.url + "crearUsername", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 String Respuesta = response.substring(67, response.length()-9);
@@ -146,7 +175,7 @@ public class SignIn extends Activity {
         TVErrorSexo.setText("");
         TVErrorEstado.setText("");
         if (!isformatoCorreoCorrecto()) TVErrorMail.append("Correo electronico invalido, el correo no puede contener '!', '$', '&' ni '%'");
-        if (!isFormatoContraseñaCorrecto()) TVErrorFormPass.append("La contraseña no puede contener '!', '$', '&' ni '%'");
+        if (!isFormatoContraseñaCorrecto()) TVErrorFormPass.append("La contraseña no puede contener '!', '$', '&' ni '%' y debe tener 8 caracteres incluyendo un numero.");
         if (!isContraseñaCorrecta()) TVErrorPass.append("\nLas contraseñas no coinciden");
         if (!isSexoElegido()) TVErrorSexo.append("\nSelecciona un genero");
         if (!isEstadoElegido()) TVErrorEstado.append("\nSelecciona un estado");
@@ -161,23 +190,31 @@ public class SignIn extends Activity {
     }
 
     private boolean isFormatoContraseñaCorrecto() {
+        boolean res;
         String contraseña = ETContraseña.getText().toString();
-        if (contraseña.contains("$") || contraseña.contains("!") || contraseña.contains("&") || contraseña.contains("%")) return false;
-        else return true;
+        if (contraseña.contains("$") || contraseña.contains("!") || contraseña.contains("&") || contraseña.contains("%")) res = false;
+        else {
+            if(contraseña.length() >= 8) {
+                if (contraseña.contains("0") || contraseña.contains("1") || contraseña.contains("2") || contraseña.contains("3") || contraseña.contains("4") || contraseña.contains("4") ||contraseña.contains("5") ||contraseña.contains("6") || contraseña.contains("7") || contraseña.contains("8") || contraseña.contains("9")) res = true;
+                else res = false;
+            }
+            else res = false;
+        }
+        return res;
     }
 
     private void enviarRegistro(final String username, final String correoElectronico, final String contraseña, final int sexo, final int estado) {
-        StringRequest peticionRegistro = new StringRequest(Request.Method.POST, url + "SignUp", new Response.Listener<String>() {
+        StringRequest peticionRegistro = new StringRequest(Request.Method.POST, OutfitHelp.url + "SignUp", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 String Respuesta = response.substring(67, response.length() - 9);
                 String Sexo;
                 if (Respuesta.equals("Exito")) {
-                    PreferencesConfig.getInstancia(SignIn.this).agregarASharedPrefs(SECRET, Secret.getInstancia(SignIn.this).code(username, contraseña));
-                    PreferencesConfig.getInstancia(SignIn.this).agregarASharedPrefs(CORREO, correoElectronico);
+                    PreferencesConfig.getInstancia(SignIn.this).agregarASharedPrefs(OutfitHelp.SECRET, Secret.getInstancia(SignIn.this).code(username, contraseña));
+                    PreferencesConfig.getInstancia(SignIn.this).agregarASharedPrefs(OutfitHelp.CORREO, correoElectronico);
                     if (sexo == 0) Sexo = "M"; else Sexo = "H";
-                    PreferencesConfig.getInstancia(SignIn.this).agregarASharedPrefs(SEXO, Sexo);
-                    PreferencesConfig.getInstancia(SignIn.this).agregarASharedPrefs(USERNAME, username);
+                    PreferencesConfig.getInstancia(SignIn.this).agregarASharedPrefs(OutfitHelp.SEXO, Sexo);
+                    PreferencesConfig.getInstancia(SignIn.this).agregarASharedPrefs(OutfitHelp.USERNAME, username);
                     Intent miIntent = new Intent(SignIn.this, OutfitHelp.class);
                     startActivity(miIntent);
                     SignIn.this.finish();
@@ -254,7 +291,7 @@ public class SignIn extends Activity {
     }
 
     private void llenarSpinnerPaises() {
-        StringRequest PeticionPaises = new StringRequest(Request.Method.POST, url + "getPaises", new Response.Listener<String>() {
+        StringRequest PeticionPaises = new StringRequest(Request.Method.POST, OutfitHelp.url + "getPaises", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 String Respuesta = response.substring(67, response.length()-9);
@@ -282,7 +319,7 @@ public class SignIn extends Activity {
         VolleySingleton.getInstancia(this).agregarACola(PeticionPaises);
     }
     private void llenarSpinnerEstados() {
-        StringRequest PeticionEstados = new StringRequest(Request.Method.POST, url + "getEstados", new Response.Listener<String>() {
+        StringRequest PeticionEstados = new StringRequest(Request.Method.POST, OutfitHelp.url + "getEstados", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 String Respuesta = response.substring(67, response.length()-9);

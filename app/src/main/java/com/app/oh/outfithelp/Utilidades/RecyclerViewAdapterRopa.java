@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.app.oh.outfithelp.R;
 import com.app.oh.outfithelp.Vistas.AgregarPrenda;
@@ -48,7 +49,6 @@ public class RecyclerViewAdapterRopa extends RecyclerView.Adapter<RecyclerViewAd
             if (archivo.exists()) holder.mostrarDatos("file:" + archivo.getAbsolutePath());
             else holder.mostrarDatos(lista.get(position).toString());
         }
-
     }
 
     @Override
@@ -77,7 +77,7 @@ public class RecyclerViewAdapterRopa extends RecyclerView.Adapter<RecyclerViewAd
         }
 
         public void mostrarDatos(String url) {
-            Picasso.with(view.getContext()).load(url).into(imagen);
+            Picasso.get().load(url).into(imagen);
         }
     }
 }

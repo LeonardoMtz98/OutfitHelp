@@ -197,7 +197,6 @@ public class MisPeticiones extends Fragment {
    public void mostrarPeticiones (String response)
    {
        String respuesta = response.substring(67,response.length()-9);
-       Log.e("Respuesta json", respuesta);
        JSONArray peticiones;
        try {
            peticiones = new JSONArray(respuesta);
