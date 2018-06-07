@@ -70,7 +70,7 @@ public class RecyclerViewAdapterComunidad  extends RecyclerView.Adapter<Recycler
             TVUsuario = itemView.findViewById(R.id.TVUsuarioPC);
         }
         public void mostrarDatos (int posicion) {
-            Picasso.get().load(lista[posicion][0]).into(IVAvatar);
+            Picasso.get().load(lista[posicion][0]).fit().into(IVAvatar);
             TVFecha.setText(lista[posicion][1]);
             TVTipoDeEvento.setText(lista[posicion][2]);
             TVDescripcion.setText(lista[posicion][3]);

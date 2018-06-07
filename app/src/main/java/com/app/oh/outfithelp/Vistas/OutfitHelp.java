@@ -40,7 +40,8 @@ public class OutfitHelp extends AppCompatActivity
         MisPeticiones.OnFragmentInteractionListener, Favoritos.OnFragmentInteractionListener,
         MostrarRopa.OnFragmentInteractionListener, DetallesRopa.OnFragmentInteractionListener,
         AgregarPeticion.OnFragmentInteractionListener, Recomendacion.OnFragmentInteractionListener,
-        AgregarPrenda.OnFragmentInteractionListener, configuracion.OnFragmentInteractionListener{
+        AgregarPrenda.OnFragmentInteractionListener, configuracion.OnFragmentInteractionListener, CrearRecomendacion.OnFragmentInteractionListener,
+        DetallesPeticion.OnFragmentInteractionListener{
     private View headerNav;
     private TextView TVNivel, TVIndice;
     private int cuentaBacks = 0;
@@ -51,6 +52,7 @@ public class OutfitHelp extends AppCompatActivity
     public static final String NIVEL = "Nivel";
     public static final String INDICE = "Indice";
     public static final String url = "http://104.210.40.93/WebService.asmx/";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +107,7 @@ public class OutfitHelp extends AppCompatActivity
         StringRequest peticionNivel = new StringRequest(Request.Method.POST, url + "getNivel", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                String respuesta = response.substring(67, response.length()-9);
+                String respuesta = response.substring(67, response.length() - 9);
                 TVNivel.setText(respuesta);
             }
         }, new Response.ErrorListener() {
@@ -113,7 +115,7 @@ public class OutfitHelp extends AppCompatActivity
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(OutfitHelp.this, "Oops! Error obteniendo nivel", Toast.LENGTH_SHORT).show();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
@@ -124,7 +126,7 @@ public class OutfitHelp extends AppCompatActivity
         StringRequest peticionIndice = new StringRequest(Request.Method.POST, url + "getIndice", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                String respuesta = response.substring(67, response.length()-9);
+                String respuesta = response.substring(67, response.length() - 9);
                 TVIndice.setText(respuesta);
             }
         }, new Response.ErrorListener() {
@@ -132,7 +134,7 @@ public class OutfitHelp extends AppCompatActivity
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(OutfitHelp.this, "Oops! Error obteniendo indice fashion", Toast.LENGTH_SHORT).show();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();

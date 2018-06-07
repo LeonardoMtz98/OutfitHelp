@@ -65,7 +65,7 @@ public class RecyclerViewAdapterRecomendacion extends RecyclerView.Adapter<Recyc
             super(itemView);
             IVVestido = itemView.findViewById(R.id.IVVestidoPR);
             IVZapatos = itemView.findViewById(R.id.IVZapatosPR);
-            IVPlayera = itemView.findViewById(R.id.IVPlayeraPR);
+            IVPlayera = itemView.findViewById(R.id.IVCamisaPR);
             IVPantalon = itemView.findViewById(R.id.IVPantalonPR);
             TVUsername = itemView.findViewById(R.id.TVUsernamePR);
         }
