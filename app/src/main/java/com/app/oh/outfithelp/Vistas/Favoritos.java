@@ -4,7 +4,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -44,6 +46,7 @@ public class Favoritos extends Fragment {
     public JSONArray favoritos;
     public Dialog dialogFavoritos;
     private String PkRecomendacion;
+    private SwipeRefreshLayout refreshFavoritos;
 
     public Favoritos() {
         // Required empty public constructor
@@ -62,6 +65,19 @@ public class Favoritos extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_favoritos, container, false);
         RVFavoritos = view.findViewById(R.id.RVFavoritos);
+        refreshFavoritos = view.findViewById(R.id.RefreshFavoritos);
+        refreshFavoritos.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                obtenerFavoritos();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshFavoritos.setRefreshing(false);
+                    }
+                },3000);
+            }
+        });
         RVFavoritos.setLayoutManager(new GridLayoutManager(view.getContext(),2));
         obtenerFavoritos();
         return view;
@@ -140,8 +156,8 @@ public class Favoritos extends Fragment {
         CBFavoritos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(CBFavoritos.isChecked()) cambiarStatus("Gustada");
-                else cambiarStatus("Guardada");
+                if(CBFavoritos.isChecked()) cambiarStatus("Guardada");
+                else cambiarStatus("Gustada");
             }
         });
         IBCerrar.setOnClickListener(new View.OnClickListener() {

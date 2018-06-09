@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -43,7 +45,7 @@ public class Comunidad extends Fragment {
     private RecyclerView recyclerComunidad;
     private Bundle bundle;
     private String [][] listaPeticiones;
-    //private ArrayList<String> listaPeticiones;
+    private SwipeRefreshLayout refreshComunidad;
     private View view;
 
     public Comunidad() {
@@ -63,6 +65,19 @@ public class Comunidad extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_comunidad, container, false);
+        refreshComunidad = view.findViewById(R.id.RefreshComunidad);
+        refreshComunidad.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                obtenerPeticiones();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshComunidad.setRefreshing(false);
+                    }
+                },3000);
+            }
+        });
         Localizacion.getInstancia(view.getContext()).getLocalizacion();
         Eventos = new HashMap<>();
         Avatares = new HashMap<>();
@@ -166,7 +181,6 @@ public class Comunidad extends Fragment {
             for (int i=0; i<peticiones.length(); i++)
             {
                 JSONObject peticion = peticiones.getJSONObject(i);
-                //peticion.put()
                 listaPeticiones[i][0] = IP + Avatares.get(peticion.getInt("FKAvatar"));
                 listaPeticiones[i][1] = peticion.getString("Fecha").replace("T", " ");
                 listaPeticiones[i][2] = Eventos.get(peticion.getInt("FkTipoEvento"));

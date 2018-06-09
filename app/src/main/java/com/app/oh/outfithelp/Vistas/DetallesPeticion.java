@@ -1,7 +1,9 @@
 package com.app.oh.outfithelp.Vistas;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,6 +27,7 @@ import com.app.oh.outfithelp.R;
 import com.app.oh.outfithelp.Utilidades.PreferencesConfig;
 import com.app.oh.outfithelp.Utilidades.RecyclerViewAdapterDetallesPeticion;
 import com.app.oh.outfithelp.Utilidades.VolleySingleton;
+import com.app.oh.outfithelp.Utilidades.WebService;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -43,10 +46,12 @@ public class DetallesPeticion extends Fragment {
     private TextView TVFecha, TVEvento, TVDescripcion;
     private ImageView IVAvatar;
     private RecyclerView RVRecomendaciones;
-    private ImageButton IBVolver;
+    private ImageButton IBVolver, IBBorrar;
     private String PkRecomendacion = "";
     private JSONArray recomendaciones;
     private Dialog Recomendacion;
+    private CheckBox CBLike;
+    private CheckBox CBFavoritos;
 
 
     public DetallesPeticion() {
@@ -76,6 +81,7 @@ public class DetallesPeticion extends Fragment {
         IVAvatar = view.findViewById(R.id.IVAvatarDP);
         RVRecomendaciones = view.findViewById(R.id.RVDetallesPeticion);
         IBVolver = view.findViewById(R.id.IBVolverDP);
+        IBVolver = view.findViewById(R.id.IBBorrarDP);
         TVFecha.setText(Fecha);
         TVEvento.setText(Evento);
         TVDescripcion.setText(Descripcion);
@@ -86,6 +92,12 @@ public class DetallesPeticion extends Fragment {
             @Override
             public void onClick(View view) {
                 getFragmentManager().beginTransaction().remove(DetallesPeticion.this).commit();
+            }
+        });
+        IBBorrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                borrarRecomendaciones();
             }
         });
         return view;
@@ -144,8 +156,8 @@ public class DetallesPeticion extends Fragment {
         ImageView IVCamisa = Recomendacion.findViewById(R.id.IVCamisaMR);
         ImageView IVPantalon = Recomendacion.findViewById(R.id.IVPantalonMR);
         TextView TVCerrar = Recomendacion.findViewById(R.id.TVCerrarMR);
-        final CheckBox CBLike = Recomendacion.findViewById(R.id.CBLikeMR);
-        final CheckBox CBFavoritos = Recomendacion.findViewById(R.id.CBFavoritoMR);
+        CBLike = Recomendacion.findViewById(R.id.CBLikeMR);
+        CBFavoritos = Recomendacion.findViewById(R.id.CBFavoritoMR);
         String url = IP + "WebService.asmx/getStatusRecomendacion";
 
         try {
@@ -195,16 +207,7 @@ public class DetallesPeticion extends Fragment {
         CBFavoritos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(CBFavoritos.isChecked()){
-                    CBLike.setChecked(true);
-                    CBLike.setEnabled(false);
-                    cambiarStatus("Guardada");
-                    Toast.makeText(Recomendacion.getContext(), "Guardada", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    CBLike.setEnabled(true);
-                    cambiarStatus("Gustada");
-                }
+                checarEspacioFavoritos();
             }
         });
         TVCerrar.setOnClickListener(new View.OnClickListener() {
@@ -214,6 +217,55 @@ public class DetallesPeticion extends Fragment {
             }
         });
         Recomendacion.show();
+    }
+
+    public void checarEspacioFavoritos()
+    {
+        String url =  IP + "WebService.asmx/checarFavoritos";
+        StringRequest checarFavoritos = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String respusta = response.substring(67, response.length()-9);
+                if (respusta.equals("Disponibles"))
+                {
+                    if(CBFavoritos.isChecked()){
+                        CBLike.setChecked(true);
+                        CBLike.setEnabled(false);
+                        cambiarStatus("Guardada");
+                        Toast.makeText(Recomendacion.getContext(), "Guardada", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        CBLike.setEnabled(true);
+                        cambiarStatus("Gustada");
+                    }
+                }
+                else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                    builder.setMessage("Has llegado a tu limite de espacio");
+                    builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.create();
+                    builder.show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(view.getContext(), "Oops! Error al agregar a favoritos", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", PreferencesConfig.getInstancia(view.getContext()).getFromSharedPrefs("Username"));
+                return params;
+            }
+        };
+        VolleySingleton.getInstancia(view.getContext()).agregarACola(checarFavoritos);
     }
 
     public void cambiarStatus (final String Status)
@@ -241,6 +293,33 @@ public class DetallesPeticion extends Fragment {
             }
         };
         VolleySingleton.getInstancia(view.getContext()).agregarACola(status);
+    }
+
+    public void borrarRecomendaciones ()
+    {
+        String url = IP + "WebService.asmx/borrarRecomendaciones";
+        StringRequest borrarRecomendaciones = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String respuesta = response.substring(67, response.length()-9);
+                if(respuesta.equals("Exito")) obtenerRecomendaciones();
+                else Toast.makeText(view.getContext(),"Oops! "+ respuesta, Toast.LENGTH_SHORT).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(view.getContext(),"Oops! Error al borrar recomendaciones", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("secret", PreferencesConfig.getInstancia(view.getContext()).getFromSharedPrefs("Secret"));
+                params.put("peticion", PkPeticion);
+                return  params;
+            }
+        };
+        VolleySingleton.getInstancia(view.getContext()).agregarACola(borrarRecomendaciones);
     }
 
     public void onButtonPressed(Uri uri) {

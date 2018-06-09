@@ -3,12 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.app.oh.outfithelp.Vistas.Favoritos">
-
-    <android.support.v7.widget.RecyclerView
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/RVFavoritos"
-        android:padding="10dp">
-    </android.support.v7.widget.RecyclerView>
+        android:id="@+id/RefreshFavoritos">
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/RVFavoritos"
+            android:padding="10dp">
+        </android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 
 </FrameLayout>

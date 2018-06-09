@@ -4,13 +4,16 @@
     android:layout_height="match_parent"
     android:id="@+id/LYComunidad"
     tools:context="com.app.oh.outfithelp.Vistas.Comunidad">
-
-    <android.support.v7.widget.RecyclerView
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp"
-        android:id="@+id/RVComunidad">
+        android:id="@+id/RefreshComunidad">
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:id="@+id/RVComunidad">
 
-    </android.support.v7.widget.RecyclerView>
-
+        </android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>

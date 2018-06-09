@@ -1,7 +1,9 @@
 package com.app.oh.outfithelp.Vistas;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -87,8 +89,24 @@ public class MisPeticiones extends Fragment {
         IBagregarPeticiones.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment miFragment = new AgregarPeticion();
-                getFragmentManager().beginTransaction().add(R.id.LYMisPeticiones, miFragment).commit();
+                if (listaPeticiones.length == 7)
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                    builder.setMessage("Solo puedes tener 7 peticiones activas");
+                    builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.create();
+                    builder.show();
+                }
+                else {
+                    Fragment miFragment = new AgregarPeticion();
+                    getFragmentManager().beginTransaction().add(R.id.LYMisPeticiones, miFragment).commit();
+                }
+
             }
         });
         refreshPeticiones.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

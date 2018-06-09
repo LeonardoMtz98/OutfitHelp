@@ -352,13 +352,13 @@ public class AgregarPeticion extends Fragment {
     {
         DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(), new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void onDateSet(DatePicker datePicker, int year, int mothOfYear, int dayOfMonth) {
-                TVFechaAgregarPeticion.setText(dayOfMonth+"/" + mothOfYear + "/" + year );
-                if (dayOfMonth < dia && mothOfYear <= mes && year <= año)
+            public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                TVFechaAgregarPeticion.setText(dayOfMonth+"/" + (monthOfYear+1) + "/" + year );
+                if (dayOfMonth < dia && monthOfYear <= mes && year <= año)
                 {
                     TVFaltaFecha.setText("Fecha Invalida");
                 }
-                else if (mothOfYear < mes && year <= año)
+                else if (monthOfYear < mes && year <= año)
                 {
                     TVFaltaFecha.setText("Fecha Invalida");
                 }
@@ -370,8 +370,8 @@ public class AgregarPeticion extends Fragment {
                     IBReloj.setEnabled(true);
                     TVFaltaFecha.setText("");
                 }
-                fecha = year + "-" + mothOfYear + "-" + dayOfMonth;
-                if (dayOfMonth == dia && mothOfYear == mes && year == año) eventoHoy = true;
+                fecha = year + "-" + (monthOfYear+1) + "-" + dayOfMonth;
+                if (dayOfMonth == dia && monthOfYear == mes && year == año) eventoHoy = true;
             }
         }, año, mes, dia);
         datePickerDialog.show();

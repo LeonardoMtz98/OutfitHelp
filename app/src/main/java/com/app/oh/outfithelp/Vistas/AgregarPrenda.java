@@ -119,6 +119,8 @@ public class AgregarPrenda extends Fragment {
         LYRotar = view.findViewById(R.id.LYRotar);
         LYRotar.setVisibility(View.GONE);
         IBRotarIzq = view.findViewById(R.id.IBRotarIzq);
+        LYEspera = view.findViewById(R.id.LYEspera);
+        TVInfoCarga = view.findViewById(R.id.TVInfoCarga);
         IBRotarIzq.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,6 +145,10 @@ public class AgregarPrenda extends Fragment {
             @Override
             public void onClick(View view) {
                 tomarFoto();
+                IBValidar.setEnabled(true);
+                TVInfoFoto.setText("");
+                IBValidar.setVisibility(View.VISIBLE);
+                BTEnviar.setVisibility(View.GONE);
             }
         });
         IBTomarFoto.setEnabled(false);
@@ -170,8 +176,7 @@ public class AgregarPrenda extends Fragment {
             }
         });
         BTEnviar.setVisibility(View.GONE);
-        LYEspera = view.findViewById(R.id.LYEspera);
-        TVInfoCarga = view.findViewById(R.id.TVInfoCarga);
+
         return view;
     }
 
