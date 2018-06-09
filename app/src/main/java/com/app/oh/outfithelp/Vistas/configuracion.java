@@ -45,6 +45,13 @@ public class configuracion extends Fragment {
     private Button BTVerTyC;
     private Button BTCambiarPass;
 
+    Dialog dialogCambiarPass;
+    EditText ETContraseña;
+    TextView TVInfoPass;
+    EditText ETContraseñaNueva;
+    EditText ETConfContraseñaNueva;
+    TextView TVInfoPassNueva;
+
     public configuracion() {
         // Required empty public constructor
     }
@@ -123,13 +130,13 @@ public class configuracion extends Fragment {
     }
 
     private void cambiarPass() {
-        final Dialog dialogCambiarPass = new Dialog(view.getContext());
+        dialogCambiarPass = new Dialog(view.getContext());
         dialogCambiarPass.setContentView(R.layout.dialog_cambiar_pass);
-        final EditText ETContraseña = dialogCambiarPass.findViewById(R.id.ETContraseña);
-        final TextView TVInfoPass = dialogCambiarPass.findViewById(R.id.TVInfoPass);
-        final EditText ETContraseñaNueva = dialogCambiarPass.findViewById(R.id.ETContraseñaNueva);
-        final EditText ETConfContraseñaNueva = dialogCambiarPass.findViewById(R.id.ETConfContraseñaNueva);
-        final TextView TVInfoPassNueva = dialogCambiarPass.findViewById(R.id.TVInfoPassNueva);
+        ETContraseña = dialogCambiarPass.findViewById(R.id.ETContraseña);
+        TVInfoPass = dialogCambiarPass.findViewById(R.id.TVInfoPass);
+        ETContraseñaNueva = dialogCambiarPass.findViewById(R.id.ETContraseñaNueva);
+        ETConfContraseñaNueva = dialogCambiarPass.findViewById(R.id.ETConfContraseñaNueva);
+        TVInfoPassNueva = dialogCambiarPass.findViewById(R.id.TVInfoPassNueva);
         Button BTAceptar = dialogCambiarPass.findViewById(R.id.BTAceptarCambiarPass);
         Button BTCancelar = dialogCambiarPass.findViewById(R.id.BTCancelarCambiarPass);
         BTAceptar.setOnClickListener(new View.OnClickListener() {
@@ -137,43 +144,16 @@ public class configuracion extends Fragment {
             public void onClick(View view) {
                 TVInfoPass.setText("");
                 TVInfoPassNueva.setText("");
-                final String passNueva = ETContraseñaNueva.getText().toString();
+                String passNueva = ETContraseñaNueva.getText().toString();
                 String confPassNueva = ETConfContraseñaNueva.getText().toString();
-                if (passNueva.equals(confPassNueva)){
-                    StringRequest peticionCambioPass = new StringRequest(Request.Method.POST, OutfitHelp.url + "cambiarPass", new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            String respuesta = response.substring(67, response.length()-9);
-                            Log.e("Respuesta", respuesta);
-                            if (respuesta.equals("Exito")) {
-                                String username = PreferencesConfig.getInstancia(getContext()).getFromSharedPrefs(OutfitHelp.USERNAME);
-                                String secret = Secret.getInstancia(getContext()).code(username, passNueva);
-                                PreferencesConfig.getInstancia(getContext()).agregarASharedPrefs(OutfitHelp.SECRET, secret);
-                                Toast.makeText(getContext(), "Contraseña cambiada", Toast.LENGTH_SHORT).show();
-                                dialogCambiarPass.dismiss();
-                            }else{
-                                TVInfoPass.setText("Contraseña errónea");
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getContext(), "Oops! Error al cambiar la contraseña", Toast.LENGTH_SHORT).show();
-                        }
-                    }){
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            Map<String, String> params = new HashMap<>();
-                            String Username = PreferencesConfig.getInstancia(getContext()).getFromSharedPrefs(OutfitHelp.USERNAME);
-                            String secret = Secret.getInstancia(getContext()).code(Username, ETContraseña.getText().toString());
-                            params.put("secret", secret);
-                            params.put("passNueva", ETContraseñaNueva.getText().toString());
-                            return params;
-                        }
-                    };
-                    VolleySingleton.getInstancia(getContext()).agregarACola(peticionCambioPass);
-                } else {
-                    TVInfoPassNueva.setText("Las contraseñas no coinciden.");
+                if (isFormatoContraseñaCorrecto()){
+                    if (passNueva.equals(confPassNueva)){
+                        enviarRegistro(passNueva);
+                    } else {
+                        TVInfoPassNueva.setText("Las contraseñas no coinciden.");
+                    }
+                }else {
+                    TVInfoPassNueva.setText("La contraseña no puede contener '!', '$', '&' ni '%' y debe tener 8 caracteres incluyendo un numero.");
                 }
             }
         });
@@ -186,6 +166,54 @@ public class configuracion extends Fragment {
         dialogCambiarPass.show();
     }
 
+    private void enviarRegistro(final String passNueva) {
+        StringRequest peticionCambioPass = new StringRequest(Request.Method.POST, OutfitHelp.url + "cambiarPass", new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String respuesta = response.substring(67, response.length()-9);
+                Log.e("Respuesta", respuesta);
+                if (respuesta.equals("Exito")) {
+                    String username = PreferencesConfig.getInstancia(getContext()).getFromSharedPrefs(OutfitHelp.USERNAME);
+                    String secret = Secret.getInstancia(getContext()).code(username, passNueva);
+                    PreferencesConfig.getInstancia(getContext()).agregarASharedPrefs(OutfitHelp.SECRET, secret);
+                    Toast.makeText(getContext(), "Contraseña cambiada", Toast.LENGTH_SHORT).show();
+                    dialogCambiarPass.dismiss();
+                }else{
+                    TVInfoPass.setText("Contraseña errónea");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), "Oops! Error al cambiar la contraseña", Toast.LENGTH_SHORT).show();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                String Username = PreferencesConfig.getInstancia(getContext()).getFromSharedPrefs(OutfitHelp.USERNAME);
+                String secret = Secret.getInstancia(getContext()).code(Username, ETContraseña.getText().toString());
+                params.put("secret", secret);
+                params.put("passNueva", ETContraseñaNueva.getText().toString());
+                return params;
+            }
+        };
+        VolleySingleton.getInstancia(getContext()).agregarACola(peticionCambioPass);
+    }
+
+    private boolean isFormatoContraseñaCorrecto() {
+        boolean res;
+        String contraseña = ETContraseñaNueva.getText().toString();
+        if (contraseña.contains("$") || contraseña.contains("!") || contraseña.contains("&") || contraseña.contains("%")) res = false;
+        else {
+            if(contraseña.length() >= 8) {
+                if (contraseña.contains("0") || contraseña.contains("1") || contraseña.contains("2") || contraseña.contains("3") || contraseña.contains("4") || contraseña.contains("4") ||contraseña.contains("5") ||contraseña.contains("6") || contraseña.contains("7") || contraseña.contains("8") || contraseña.contains("9")) res = true;
+                else res = false;
+            }
+            else res = false;
+        }
+        return res;
+    }
     private void actualizarSexo() {
         final String sexo;
         if (RBHombre.isChecked() && !RBMujer.isChecked()) sexo = "H";

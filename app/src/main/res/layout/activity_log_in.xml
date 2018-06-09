@@ -65,6 +65,7 @@
                 android:alpha=".50"
                 android:gravity="bottom"
                 android:singleLine="true"
+                android:inputType="textPassword"
                 />
 
             <Button

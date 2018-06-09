@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
@@ -33,16 +35,50 @@ public class Localizacion {
     private static Localizacion miInstancia;
     private static Context miContext;
     private static final String IP = "http://104.210.40.93/";
-    private FusedLocationProviderClient mFusedLocationClient;
     private double longitud;
     private double latitud;
-    private String localizacion;
+
+
+    private LocationManager locationManager;
+    LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            latitud = location.getLatitude();
+            longitud = location.getLongitude();
+            if (location.getAccuracy() < 100) mandarLocalizacion(latitud, longitud);
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+    };
 
     public Localizacion() {
     }
 
+    public void iniciarDeteccionUbicacion() {
+        if (ActivityCompat.checkSelfPermission(miContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(miContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(miContext, "Activa los permisos de ubicacion por favor", Toast.LENGTH_SHORT).show();
+        }
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+    }
+    public void detenerActualizacionesUbicacion(){
+        locationManager.removeUpdates(locationListener);
+    }
     public Localizacion(Context c) {
         miContext = c;
+        locationManager =  (LocationManager) miContext.getSystemService(Context.LOCATION_SERVICE);
     }
 
     public static synchronized Localizacion getInstancia(Context context) {
@@ -52,32 +88,6 @@ public class Localizacion {
         return miInstancia;
     }
 
-    public String getLocalizacion() {
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(miContext);
-        if (ActivityCompat.checkSelfPermission(miContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(miContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-        }
-        mFusedLocationClient.getLastLocation().addOnSuccessListener((Activity) miContext, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location != null) {
-
-                    latitud = location.getLatitude();
-                    while (latitud == 0) getLocalizacion();
-                    longitud = location.getLongitude();
-                    mandarLocalizacion(latitud, longitud);
-                    localizacion = latitud + " " + longitud;
-                }
-            }
-        });
-        return localizacion;
-    }
     public void mandarLocalizacion (final double latitud, final double longitud)
     {
         String url = IP + "WebService.asmx/setLocalizacion";

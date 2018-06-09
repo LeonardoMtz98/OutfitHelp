@@ -18,7 +18,8 @@
         android:textSize="24sp"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
-        android:hint="Contraseña Antigua"/>
+        android:hint="Contraseña Antigua"
+        android:inputType="textPassword"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,7 +33,8 @@
         android:textSize="24sp"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
-        android:hint="Contraseña Nueva"/>
+        android:hint="Contraseña Nueva"
+        android:inputType="textPassword"/>
     <EditText
         android:id="@+id/ETConfContraseñaNueva"
         android:layout_width="wrap_content"
@@ -41,7 +43,8 @@
         android:textSize="24sp"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
-        android:hint="Confirmar Contraseña"/>
+        android:hint="Confirmar Contraseña"
+        android:inputType="textPassword"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

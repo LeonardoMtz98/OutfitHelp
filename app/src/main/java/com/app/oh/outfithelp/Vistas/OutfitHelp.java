@@ -1,12 +1,15 @@
 package com.app.oh.outfithelp.Vistas;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -26,6 +29,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.app.oh.outfithelp.R;
+import com.app.oh.outfithelp.Utilidades.Localizacion;
 import com.app.oh.outfithelp.Utilidades.PreferencesConfig;
 import com.app.oh.outfithelp.Utilidades.VolleySingleton;
 
@@ -89,8 +93,29 @@ public class OutfitHelp extends AppCompatActivity
         TVIndice = headerNav.findViewById(R.id.TVIndice);
         TextView TVEmail = headerNav.findViewById(R.id.TVEmail123);
         TVEmail.setText(PreferencesConfig.getInstancia(OutfitHelp.this).getFromSharedPrefs(OutfitHelp.CORREO));
+        try {
+            Localizacion.getInstancia(this).iniciarDeteccionUbicacion();
+        }catch (SecurityException ex){
+            pedirPermisosUbicacion();
+        }
     }
-
+    private void pedirPermisosUbicacion() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setMessage("Por favor activa los servicios de ubicacion y dale permisos a Outfithelp");
+        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", OutfitHelp.this.getPackageName(), null);
+                intent.setData(uri);
+                startActivity(intent);
+            }
+        });
+        builder.create();
+        builder.show();
+    }
     private void actualizarDatos() {
         int rand = new Random().nextInt();
         if (rand % 2 == 0) {

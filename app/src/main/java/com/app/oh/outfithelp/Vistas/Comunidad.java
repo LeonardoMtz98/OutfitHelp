@@ -4,9 +4,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -78,16 +80,36 @@ public class Comunidad extends Fragment {
                 },3000);
             }
         });
-        Localizacion.getInstancia(view.getContext()).getLocalizacion();
         Eventos = new HashMap<>();
         Avatares = new HashMap<>();
         bundle = new Bundle();
         recyclerComunidad = view.findViewById(R.id.RVComunidad);
         recyclerComunidad.setLayoutManager(new GridLayoutManager(view.getContext(),1));
         obtenerDatos();
+        try {
+            Localizacion.getInstancia(Comunidad.this.getContext()).detenerActualizacionesUbicacion();
+        }catch (SecurityException ex){
+            pedirPermisosUbicacion();
+        }
         return view;
     }
-
+    private void pedirPermisosUbicacion() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(view.getContext());
+        builder.setMessage("Por favor activa los servicios de ubicacion y dale permisos a Outfithelp");
+        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", Comunidad.this.getContext().getPackageName(), null);
+                intent.setData(uri);
+                startActivity(intent);
+            }
+        });
+        builder.create();
+        builder.show();
+    }
     public void obtenerDatos()
     {
         String url = IP + "WebService.asmx/getAvatares";

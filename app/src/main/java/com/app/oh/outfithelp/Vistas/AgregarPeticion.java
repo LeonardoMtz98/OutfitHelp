@@ -1,11 +1,17 @@
 package com.app.oh.outfithelp.Vistas;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -124,7 +130,11 @@ public class AgregarPeticion extends Fragment {
         hora = calendar.get(Calendar.HOUR_OF_DAY);
         minuto = calendar.get(Calendar.MINUTE);
         IBReloj.setEnabled(false);
-        Localizacion.getInstancia(view.getContext()).getLocalizacion();
+        try {
+            Localizacion.getInstancia(view.getContext()).iniciarDeteccionUbicacion();
+        }catch (SecurityException ex){
+            pedirPermisosUbicacion();
+        }
         obtenerAvatares();
         obtenerTiposDeEvento();
         TVCerrarAgregarPeticion.setOnClickListener(new View.OnClickListener() {
@@ -179,7 +189,9 @@ public class AgregarPeticion extends Fragment {
         BTAgregarPeticion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checarDatos();
+                if (ActivityCompat.checkSelfPermission(AgregarPeticion.this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(AgregarPeticion.this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    pedirPermisosUbicacion();
+                }else checarDatos();
             }
         });
         ETDescripcionAgregarPeticion.setOnClickListener(new View.OnClickListener() {
@@ -189,6 +201,24 @@ public class AgregarPeticion extends Fragment {
             }
         });
         return view;
+    }
+
+    private void pedirPermisosUbicacion() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(view.getContext());
+        builder.setMessage("Por favor activa los servicios de ubicacion y dale permisos a Outfithelp");
+        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", AgregarPeticion.this.getContext().getPackageName(), null);
+                intent.setData(uri);
+                startActivity(intent);
+            }
+        });
+        builder.create();
+        builder.show();
     }
 
     public void checarDatos()
@@ -215,6 +245,7 @@ public class AgregarPeticion extends Fragment {
         if (completo)
         {
             enviarPeticion();
+            Localizacion.getInstancia(view.getContext()).detenerActualizacionesUbicacion();
             getFragmentManager().beginTransaction().remove(AgregarPeticion.this).commit();
         }
     }

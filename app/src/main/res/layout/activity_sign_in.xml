@@ -20,187 +20,195 @@
         android:clickable="false"
         android:src="@color/colorPrimary"
         />
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:elevation="100dp">
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="OutfitHelp"
-                android:textAlignment="center"
-                android:textSize="70sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:alpha="1"/>
-        </LinearLayout>
-
+        android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="bottom|center_horizontal"
-            android:layout_gravity="bottom">
-            <EditText
-                android:id="@+id/ETCorreoElectronico"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Correo Electronico"
-                android:textColor="@android:color/black"
-                android:textColorHint="@android:color/black"
-                android:alpha=".50"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/TVErrorMail"
-                android:textColor="@android:color/holo_red_dark"/>
-            <EditText
-                android:id="@+id/ETContraseña"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Contraseña"
-                android:textColor="@android:color/black"
-                android:textColorHint="@android:color/black"
-                android:alpha=".50"
-                android:gravity="bottom"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/TVErrorFormPass"
-                android:textColor="@android:color/holo_red_dark"/>
-            <EditText
-                android:id="@+id/ETConfirmarContraseña"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Confirmar Contraseña"
-                android:textColor="@android:color/black"
-                android:textColorHint="@android:color/black"
-                android:alpha=".50"
-                android:gravity="bottom"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/TVErrorPass"
-                android:textColor="@android:color/holo_red_dark"/>
-            <RadioGroup
-                android:id="@+id/RadioGroupGenero"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:orientation="horizontal">
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/RadioHombre"
-                    android:text="Hombre"
-                    android:textSize="20dp"/>
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/RadioMujer"
-                    android:text="Mujer"
-                    android:textSize="20dp"/>
-            </RadioGroup>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/TVErrorSexo"
-                android:textColor="@android:color/holo_red_dark"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="No te preocupes, podrás cambiar después ;D"
-                android:textSize="15dp"/>
-            <Spinner
-                android:id="@+id/SpinnerPaises"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:spinnerMode="dialog"></Spinner>
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/SpinnerEstados"
-                android:spinnerMode="dialog"></Spinner>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/TVErrorEstado"
-                android:textColor="@android:color/holo_red_dark"/>
+            android:elevation="100dp"
+            android:orientation="vertical">
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:layout_gravity="center_horizontal">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/TVUsername"
-                    android:text="Username"
-                    android:textSize="30dp"
-                    android:textColor="@android:color/white"/>
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/IBTActualizarUsername"
-                    android:backgroundTint="@color/colorBlueDark"
-                    android:src="@drawable/ic_autorenew_black_24dp"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="22sp"
-                    android:textColor="@android:color/white"
-                    android:text="Acepto los "/>
-                <TextView
-                    android:id="@+id/TVTerminosYCondiciones"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="22sp"
-                    android:textColor="@android:color/holo_blue_dark"
-                    android:textStyle="italic|bold"
-                    android:text="Terminos y condiciones"/>
-            </LinearLayout>
-            <Button
-                android:id="@+id/BTRegistrarse"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@color/colorPrimary"
-                android:text="Registrarse"
-                android:textAllCaps="false"
-                android:textColor="@android:color/white"
-                android:textSize="25dp"
-                />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="20dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ya tienes cuenta?"
-                    android:textSize="20dp"
+                    android:text="OutfitHelp"
+                    android:textAlignment="center"
+                    android:textSize="70sp"
+                    android:textStyle="bold"
                     android:textColor="@android:color/black"
+                    android:alpha="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="bottom|center_horizontal"
+                android:layout_gravity="bottom">
+                <EditText
+                    android:id="@+id/ETCorreoElectronico"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Correo Electronico"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@android:color/black"
+                    android:alpha=".50"
                     />
                 <TextView
-                    android:id="@+id/TVIniciaSesion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Inicia Sesion"
+                    android:id="@+id/TVErrorMail"
+                    android:textColor="@android:color/holo_red_dark"/>
+                <EditText
+                    android:id="@+id/ETContraseña"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Contraseña"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@android:color/black"
+                    android:alpha=".50"
+                    android:gravity="bottom"
+                    android:inputType="textPassword"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/TVErrorFormPass"
+                    android:textColor="@android:color/holo_red_dark"/>
+                <EditText
+                    android:id="@+id/ETConfirmarContraseña"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Confirmar Contraseña"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@android:color/black"
+                    android:alpha=".50"
+                    android:gravity="bottom"
+                    android:inputType="textPassword"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/TVErrorPass"
+                    android:textColor="@android:color/holo_red_dark"/>
+                <RadioGroup
+                    android:id="@+id/RadioGroupGenero"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:orientation="horizontal">
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/RadioHombre"
+                        android:text="Hombre"
+                        android:textSize="20dp"/>
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/RadioMujer"
+                        android:text="Mujer"
+                        android:textSize="20dp"/>
+                </RadioGroup>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/TVErrorSexo"
+                    android:textColor="@android:color/holo_red_dark"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No te preocupes, podrás cambiar después ;D"
+                    android:textSize="15dp"/>
+                <Spinner
+                    android:id="@+id/SpinnerPaises"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:spinnerMode="dialog"></Spinner>
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/SpinnerEstados"
+                    android:spinnerMode="dialog"></Spinner>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/TVErrorEstado"
+                    android:textColor="@android:color/holo_red_dark"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/TVUsername"
+                        android:text="Username"
+                        android:textSize="30dp"
+                        android:textColor="@android:color/white"/>
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/IBTActualizarUsername"
+                        android:backgroundTint="@color/colorBlueDark"
+                        android:src="@drawable/ic_autorenew_black_24dp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="22sp"
+                        android:textColor="@android:color/white"
+                        android:text="Acepto los "/>
+                    <TextView
+                        android:id="@+id/TVTerminosYCondiciones"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="22sp"
+                        android:textColor="@android:color/holo_blue_dark"
+                        android:textStyle="italic|bold"
+                        android:text="Terminos y condiciones"/>
+                </LinearLayout>
+                <Button
+                    android:id="@+id/BTRegistrarse"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@color/colorPrimary"
+                    android:text="Registrarse"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
                     android:textSize="25dp"
-                    android:textColor="@android:color/holo_blue_dark"/>
+                    />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ya tienes cuenta?"
+                        android:textSize="20dp"
+                        android:textColor="@android:color/black"
+                        />
+                    <TextView
+                        android:id="@+id/TVIniciaSesion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Inicia Sesion"
+                        android:textSize="25dp"
+                        android:textColor="@android:color/holo_blue_dark"/>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </FrameLayout>
+    </ScrollView>
+
 </FrameLayout>
