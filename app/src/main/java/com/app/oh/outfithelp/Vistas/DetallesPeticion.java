@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,10 +50,11 @@ public class DetallesPeticion extends Fragment {
     private ImageButton IBVolver, IBBorrar;
     private String PkRecomendacion = "";
     private JSONArray recomendaciones;
-    private Dialog Recomendacion;
+    private Dialog Recomendacion, Favoritos;
     private CheckBox CBLike;
     private CheckBox CBFavoritos;
-
+    private JSONArray ListaFavoritos;
+    private RecyclerView RVFavoritos;
 
     public DetallesPeticion() {
         // Required empty public constructor
@@ -81,7 +83,7 @@ public class DetallesPeticion extends Fragment {
         IVAvatar = view.findViewById(R.id.IVAvatarDP);
         RVRecomendaciones = view.findViewById(R.id.RVDetallesPeticion);
         IBVolver = view.findViewById(R.id.IBVolverDP);
-        IBVolver = view.findViewById(R.id.IBBorrarDP);
+        IBBorrar = view.findViewById(R.id.IBBorrarDP);
         TVFecha.setText(Fecha);
         TVEvento.setText(Evento);
         TVDescripcion.setText(Descripcion);
@@ -240,12 +242,22 @@ public class DetallesPeticion extends Fragment {
                     }
                 }
                 else {
+                    CBFavoritos.setChecked(false);
+                    CBLike.setEnabled(true);
+                    cambiarStatus("Gustada");
                     AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                     builder.setMessage("Has llegado a tu limite de espacio");
                     builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             dialogInterface.dismiss();
+                        }
+                    });
+                    builder.setNeutralButton("Remplazar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            mostrarFavoritos();
                         }
                     });
                     builder.create();
@@ -275,7 +287,7 @@ public class DetallesPeticion extends Fragment {
             @Override
             public void onResponse(String response) {
                 String respuesta = response.substring(67, response.length()-9);
-                if (!respuesta.contains("Exito")) Toast.makeText(view.getContext(), "Oops! "+ respuesta, Toast.LENGTH_SHORT).show();
+                if (!respuesta.equals("Exito")) Toast.makeText(view.getContext(), "Oops! "+ respuesta, Toast.LENGTH_SHORT).show();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -293,6 +305,60 @@ public class DetallesPeticion extends Fragment {
             }
         };
         VolleySingleton.getInstancia(view.getContext()).agregarACola(status);
+    }
+
+    public void mostrarFavoritos ()
+    {
+        Favoritos = new Dialog(view.getContext());
+        Favoritos.setContentView(R.layout.fragment_favoritos);
+        RVFavoritos = Favoritos.findViewById(R.id.RVFavoritos);
+        RVFavoritos.setLayoutManager(new GridLayoutManager(view.getContext(),2));
+        String url = IP + "WebService.asmx/getFavoritos";
+        StringRequest favoritos = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String respuesta = response.substring(67,response.length()-9);
+                try {
+                    ListaFavoritos = new JSONArray(respuesta);
+                    RecyclerViewAdapterDetallesPeticion adapter = new RecyclerViewAdapterDetallesPeticion(ListaFavoritos);
+                    adapter.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View vista) {
+                            Favoritos.dismiss();
+                            try {
+                                JSONObject remplazar = ListaFavoritos.getJSONObject(RVFavoritos.getChildAdapterPosition(vista));
+                                String temp = PkRecomendacion;
+                                PkRecomendacion = remplazar.getString("recomendacion");
+                                cambiarStatus("Gustada");
+                                PkRecomendacion = temp;
+                                cambiarStatus("Guardada");
+                                CBFavoritos.setChecked(true);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    RVFavoritos.setAdapter(adapter);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(view.getContext(), "Oops! Error al cargar recomendaciones", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(view.getContext(), "Oops! Error al obtener favoritos", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String,String> params = new HashMap<>();
+                params.put("secret", PreferencesConfig.getInstancia(view.getContext()).getFromSharedPrefs("Secret"));
+                return params;
+            }
+        };
+        VolleySingleton.getInstancia(view.getContext()).agregarACola(favoritos);
+        Favoritos.show();
     }
 
     public void borrarRecomendaciones ()

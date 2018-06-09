@@ -38,22 +38,26 @@
                 android:id="@+id/TVDescripcionDP" />
         </LinearLayout>
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
+
+
+    <ImageButton
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="end">
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_delete_forever"
-            android:id="@+id/IBBorrarDP"/>
-    </LinearLayout>
-    <android.support.v7.widget.RecyclerView
+        android:layout_gravity="end"
+        android:src="@drawable/ic_delete_forever"
+        android:id="@+id/IBBorrarDP"/>
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="310dp"
-        android:padding="10dp"
-        android:id="@+id/RVDetallesPeticion">
-    </android.support.v7.widget.RecyclerView>
+        android:id="@+id/RefreshRecomendaciones">
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="310dp"
+            android:padding="10dp"
+            android:id="@+id/RVDetallesPeticion">
+        </android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
