@@ -279,7 +279,6 @@ public class MisPeticiones extends Fragment {
     public void dialogEliminarPeticion (final View vista)
     {
         final String PkPeticion = listaPeticiones[recyclerPeticiones.getChildAdapterPosition(vista)][4];
-        Toast.makeText(view.getContext(), PkPeticion, Toast.LENGTH_SHORT).show();
         miDialog = new Dialog(view.getContext());
         Button eliminar;
         Button cancelar;

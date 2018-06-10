@@ -203,14 +203,23 @@ public class configuracion extends Fragment {
 
     private boolean isFormatoContraseñaCorrecto() {
         boolean res;
-        String contraseña = ETContraseñaNueva.getText().toString();
-        if (contraseña.contains("$") || contraseña.contains("!") || contraseña.contains("&") || contraseña.contains("%")) res = false;
+        String contraseña = ETContraseña.getText().toString();
+        if (contraseña.contains("$") || contraseña.contains("!") || contraseña.contains("&") || contraseña.contains("%")) {
+            TVInfoPassNueva.setText("La contraseña no puede contener '$', '&', '!' ni '%'");
+            return false;
+        }
         else {
             if(contraseña.length() >= 8) {
-                if (contraseña.contains("0") || contraseña.contains("1") || contraseña.contains("2") || contraseña.contains("3") || contraseña.contains("4") || contraseña.contains("4") ||contraseña.contains("5") ||contraseña.contains("6") || contraseña.contains("7") || contraseña.contains("8") || contraseña.contains("9")) res = true;
-                else res = false;
+                if (contraseña.contains("0") || contraseña.contains("1") || contraseña.contains("2") || contraseña.contains("3") || contraseña.contains("4") || contraseña.contains("5") ||contraseña.contains("6") || contraseña.contains("7") || contraseña.contains("8") || contraseña.contains("9")) return true;
+                else {
+                    TVInfoPassNueva.setText("La contraseña debe tener al menos un numero");
+                    res = false;
+                }
             }
-            else res = false;
+            else {
+                TVInfoPassNueva.setText("La contraseña debe tener 8 caracteres minimo, longitud: " + contraseña.length());
+                return false;
+            }
         }
         return res;
     }

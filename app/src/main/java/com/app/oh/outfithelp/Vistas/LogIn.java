@@ -45,6 +45,11 @@ public class LogIn extends Activity {
     private String pass;
 
     @Override
+    public void onBackPressed() {
+        System.exit(0);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
@@ -122,6 +127,7 @@ public class LogIn extends Activity {
                 PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs(OutfitHelp.CORREO, email);
                 PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs(OutfitHelp.SEXO, usuario.getString(2));
                 PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs(OutfitHelp.USERNAME, usuario.getString(1));
+                PreferencesConfig.getInstancia(LogIn.this).agregarASharedPrefs(OutfitHelp.SESION_INICIADA, "true");
                 Intent miIntent = new Intent(this, OutfitHelp.class);
                 startActivity(miIntent);
                 LogIn.this.finish();

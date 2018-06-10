@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
@@ -33,6 +34,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class SignIn extends Activity {
@@ -51,6 +53,8 @@ public class SignIn extends Activity {
     private TextView TVErrorEstado;
     private TextView TVUsername;
     private ImageButton IBTActualizarUsername;
+    private CheckBox CBTyC;
+    private TextView TVErrorTyC;
     private TextView TVTerminosYCondiciones;
     private Button BTRegistrarse;
     private TextView tvIniciaSesion;
@@ -79,6 +83,7 @@ public class SignIn extends Activity {
         SpinnerEstados.setEnabled(false);
         TVUsername = findViewById(R.id.TVUsername);
         IBTActualizarUsername= findViewById(R.id.IBTActualizarUsername);
+        CBTyC = findViewById(R.id.CBTyC);
         TVTerminosYCondiciones = findViewById(R.id.TVTerminosYCondiciones);
         TVTerminosYCondiciones.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +115,7 @@ public class SignIn extends Activity {
                 VolleySingleton.getInstancia(SignIn.this).agregarACola(peticionTyC);
             }
         });
+        TVErrorTyC = findViewById(R.id.TVErrorTyC);
         BTRegistrarse = findViewById(R.id.BTRegistrarse);
         tvIniciaSesion = findViewById(R.id.TVIniciaSesion);
 
@@ -174,31 +180,124 @@ public class SignIn extends Activity {
         TVErrorPass.setText("");
         TVErrorSexo.setText("");
         TVErrorEstado.setText("");
-        if (!isformatoCorreoCorrecto()) TVErrorMail.append("Correo electronico invalido, el correo no puede contener '!', '$', '&' ni '%'");
-        if (!isFormatoContraseñaCorrecto()) TVErrorFormPass.append("La contraseña no puede contener '!', '$', '&' ni '%' y debe tener 8 caracteres incluyendo un numero.");
-        if (!isContraseñaCorrecta()) TVErrorPass.append("\nLas contraseñas no coinciden");
-        if (!isSexoElegido()) TVErrorSexo.append("\nSelecciona un genero");
-        if (!isEstadoElegido()) TVErrorEstado.append("\nSelecciona un estado");
-        if (isformatoCorreoCorrecto() && isContraseñaCorrecta() && isSexoElegido() && isEstadoElegido()) {
+        TVErrorTyC.setText("");
+        boolean formatoCorreo = isformatoCorreoCorrecto();
+        boolean contraseñaCorrecta = isContraseñaCorrecta();
+        boolean sexoElegido = isSexoElegido();
+        boolean estadoElegido = isEstadoElegido();
+        boolean formatoContraseña = isFormatoContraseñaCorrecto();
+        boolean TyC = isTyCaceptados();
+        if (formatoCorreo && contraseñaCorrecta && sexoElegido && estadoElegido && formatoContraseña && TyC) {
             String username = TVUsername.getText().toString();
-            String correoElectronico = ETCorreoElectronico.getText().toString();
-            String contraseña = ETContraseña.getText().toString();
+            String correoElectronico = ETCorreoElectronico.getText().toString().trim().toLowerCase(Locale.ENGLISH);
+            String contraseña = ETContraseña.getText().toString().trim();
             int sexo = RadioGroupGenero.getCheckedRadioButtonId();
             int estado = Estados.get(SpinnerEstados.getSelectedItem().toString());
             enviarRegistro(username, correoElectronico, contraseña, sexo, estado);
+        }
+        else {
+            Toast.makeText(this, "Revisa los campos", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean isTyCaceptados() {
+        if (CBTyC.isChecked()) return true;
+        else {
+            TVErrorTyC.setText("Acepta los terminos y condiciones");
+            return false;
         }
     }
 
     private boolean isFormatoContraseñaCorrecto() {
         boolean res;
         String contraseña = ETContraseña.getText().toString();
-        if (contraseña.contains("$") || contraseña.contains("!") || contraseña.contains("&") || contraseña.contains("%")) res = false;
+        if (contraseña.contains("$") || contraseña.contains("!") || contraseña.contains("&") || contraseña.contains("%")) {
+            TVErrorFormPass.setText("La contraseña no puede contener '$', '&', '!' ni '%'");
+            return false;
+        }
         else {
             if(contraseña.length() >= 8) {
-                if (contraseña.contains("0") || contraseña.contains("1") || contraseña.contains("2") || contraseña.contains("3") || contraseña.contains("4") || contraseña.contains("4") ||contraseña.contains("5") ||contraseña.contains("6") || contraseña.contains("7") || contraseña.contains("8") || contraseña.contains("9")) res = true;
-                else res = false;
+                if (contraseña.contains("0") || contraseña.contains("1") || contraseña.contains("2") || contraseña.contains("3") || contraseña.contains("4") || contraseña.contains("5") ||contraseña.contains("6") || contraseña.contains("7") || contraseña.contains("8") || contraseña.contains("9")) return true;
+                else {
+                    TVErrorFormPass.setText("La contraseña debe tener al menos un numero");
+                    res = false;
+                }
             }
-            else res = false;
+            else {
+                TVErrorFormPass.setText("La contraseña debe tener 8 caracteres minimo, longitud: " + contraseña.length());
+                return false;
+            }
+        }
+        return res;
+    }
+
+    private boolean isEstadoElegido() {
+        boolean res;
+        if (SpinnerEstados.getSelectedItem() != null) {
+            if (SpinnerEstados.getSelectedItem().toString().equals("Seleccione Estado") || SpinnerEstados.getSelectedItem() == null) {
+                TVErrorEstado.setText("Selecciona un estado");
+                res = false;
+            }
+            else res = true;
+        }
+        else {
+            TVErrorEstado.setText("Selecciona un estado");
+            res = false;
+        }
+        return res;
+    }
+
+    private boolean isSexoElegido() {
+        boolean res;
+        if (RadioGroupGenero.getCheckedRadioButtonId() == -1) {
+            TVErrorSexo.setText("Elige un sexo");
+            res = false;
+        }
+        else res = true;
+        return res;
+    }
+
+    private boolean isContraseñaCorrecta() {
+        boolean res;
+        String pass, pass1;
+        pass = ETContraseña.getText().toString();
+        pass1 = ETConfirmarContraseña.getText().toString();
+        if (pass.equals("") || pass1.equals("")) {
+            TVErrorPass.setText("Ningun campo puede estar vacio");
+            res = false;
+        } else {
+            if (pass.equals(pass1)) res = true;
+            else {
+                TVErrorPass.setText("Las contraseñas no coinciden");
+                res = false;
+            }
+        }
+        return res;
+    }
+
+    private boolean isformatoCorreoCorrecto() {
+        boolean res;
+        String correoElectronico = ETCorreoElectronico.getText().toString().trim();
+        String dominio;
+        if (correoElectronico.contains("@")) {
+            dominio = correoElectronico.split("@")[1];
+            if (dominio.contains(".")) {
+                if (dominio.split("\\.")[1].equals("com")) {
+                    if (correoElectronico.contains("$") || correoElectronico.contains("!") || correoElectronico.contains("&") || correoElectronico.contains("%")){
+                        TVErrorMail.setText("El correo no puede contener '$', '&', '!' ni '%'");
+                        res = false;
+                    }
+                    else res = true;
+                } else res = false;
+            }
+            else {
+                TVErrorMail.setText("El formato del correo electrónico es incorrecto, falta punto");
+                res = false;
+            }
+        }
+        else {
+            TVErrorMail.setText("El formato del correo electrónico es incorrecto, falta @");
+            res = false;
         }
         return res;
     }
@@ -212,12 +311,15 @@ public class SignIn extends Activity {
                 if (Respuesta.equals("Exito")) {
                     PreferencesConfig.getInstancia(SignIn.this).agregarASharedPrefs(OutfitHelp.SECRET, Secret.getInstancia(SignIn.this).code(username, contraseña));
                     PreferencesConfig.getInstancia(SignIn.this).agregarASharedPrefs(OutfitHelp.CORREO, correoElectronico);
+                    PreferencesConfig.getInstancia(SignIn.this).agregarASharedPrefs(OutfitHelp.SESION_INICIADA, "true");
                     if (sexo == 0) Sexo = "M"; else Sexo = "H";
                     PreferencesConfig.getInstancia(SignIn.this).agregarASharedPrefs(OutfitHelp.SEXO, Sexo);
                     PreferencesConfig.getInstancia(SignIn.this).agregarASharedPrefs(OutfitHelp.USERNAME, username);
                     Intent miIntent = new Intent(SignIn.this, OutfitHelp.class);
                     startActivity(miIntent);
                     SignIn.this.finish();
+                }else {
+                    TVErrorMail.setText(Respuesta);
                 }
             }
         }, new Response.ErrorListener() {
@@ -243,52 +345,6 @@ public class SignIn extends Activity {
 
     }
 
-    private boolean isEstadoElegido() {
-        boolean res;
-        if (SpinnerEstados.getSelectedItem() != null) {
-            if (SpinnerEstados.getSelectedItem().toString().equals("Seleccione Estado")) res = false;
-            else res = true;
-        }
-        else res = false;
-        return res;
-    }
-
-    private boolean isSexoElegido() {
-        boolean res;
-        if (RadioGroupGenero.getCheckedRadioButtonId() == -1) res = false;
-        else res = true;
-        return res;
-    }
-
-    private boolean isContraseñaCorrecta() {
-        boolean res;
-        String pass, pass1;
-        if (ETContraseña.getText().toString().equals("") || ETConfirmarContraseña.getText().toString().equals("")) {
-            res = false;
-        } else {
-            pass = ETContraseña.getText().toString();
-            pass1 = ETConfirmarContraseña.getText().toString();
-            if (pass.equals(pass1)) res = true;
-            else res = false;
-        }
-        return res;
-    }
-
-    private boolean isformatoCorreoCorrecto() {
-        boolean res;
-        String correoElectronico = ETCorreoElectronico.getText().toString().trim();
-        String dominio;
-        if (correoElectronico.contains("@")) {
-            dominio = correoElectronico.split("@")[1];
-            if (dominio.split("\\.")[1].equals("com")) {
-                if (correoElectronico.contains("$") || correoElectronico.contains("!") || correoElectronico.contains("&") || correoElectronico.contains("%")) res = false;
-                else res = true;
-            }
-            else res = false;
-        }
-        else res = false;
-        return  res;
-    }
 
     private void llenarSpinnerPaises() {
         StringRequest PeticionPaises = new StringRequest(Request.Method.POST, OutfitHelp.url + "getPaises", new Response.Listener<String>() {

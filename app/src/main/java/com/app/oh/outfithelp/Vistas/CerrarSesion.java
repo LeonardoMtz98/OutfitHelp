@@ -67,6 +67,7 @@ public class CerrarSesion  {
         PreferencesConfig.getInstancia(miContext).agregarASharedPrefs(OutfitHelp.SECRET, "NULL");
         PreferencesConfig.getInstancia(miContext).agregarASharedPrefs(OutfitHelp.NIVEL, "NULL");
         PreferencesConfig.getInstancia(miContext).agregarASharedPrefs(OutfitHelp.INDICE, "NULL");
+        PreferencesConfig.getInstancia(miContext).agregarASharedPrefs(OutfitHelp.SESION_INICIADA, "false");
     }
 
 }

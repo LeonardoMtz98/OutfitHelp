@@ -31,7 +31,8 @@ public class SplashScreen extends Activity {
                 StringRequest primeraConexion = new StringRequest(Request.Method.POST, OutfitHelp.url + "getPaises", new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        if (PreferencesConfig.getInstancia(SplashScreen.this).getFromSharedPrefs("Secret").equals("NULL")) {
+                        String Sesion = PreferencesConfig.getInstancia(SplashScreen.this).getFromSharedPrefs(OutfitHelp.SESION_INICIADA);
+                        if (Sesion.equals("false") || Sesion.equals("NULL")) {
                             Intent miIntent = new Intent(SplashScreen.this, LogIn.class);
                             startActivity(miIntent);
                             SplashScreen.this.finish();

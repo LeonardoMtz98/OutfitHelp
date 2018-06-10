@@ -55,6 +55,7 @@ public class OutfitHelp extends AppCompatActivity
     public static final String USERNAME = "Username";
     public static final String NIVEL = "Nivel";
     public static final String INDICE = "Indice";
+    public static final String SESION_INICIADA = "Sesion_Iniciada";
     public static final String url = "http://104.210.40.93/WebService.asmx/";
 
     @Override

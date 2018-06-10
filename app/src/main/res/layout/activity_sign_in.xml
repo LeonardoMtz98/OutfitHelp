@@ -164,7 +164,8 @@
                         android:layout_height="wrap_content"
                         android:textSize="22sp"
                         android:textColor="@android:color/white"
-                        android:text="Acepto los "/>
+                        android:text="Acepto los "
+                        android:id="@+id/CBTyC"/>
                     <TextView
                         android:id="@+id/TVTerminosYCondiciones"
                         android:layout_width="wrap_content"
@@ -172,8 +173,14 @@
                         android:textSize="22sp"
                         android:textColor="@android:color/holo_blue_dark"
                         android:textStyle="italic|bold"
+                        android:paddingBottom="10dp"
                         android:text="Terminos y condiciones"/>
                 </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/TVErrorTyC"
+                    android:textColor="@android:color/holo_red_dark"/>
                 <Button
                     android:id="@+id/BTRegistrarse"
                     android:layout_width="200dp"
