@@ -202,8 +202,8 @@ public class DetallesPeticion extends Fragment {
         CBLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(CBLike.isChecked())cambiarStatus("Gustada");
-                else cambiarStatus("Vista");
+                if(CBLike.isChecked())cambiarStatus("Gustada", PkRecomendacion);
+                else cambiarStatus("Vista", PkRecomendacion);
             }
         });
         CBFavoritos.setOnClickListener(new View.OnClickListener() {
@@ -233,18 +233,18 @@ public class DetallesPeticion extends Fragment {
                     if(CBFavoritos.isChecked()){
                         CBLike.setChecked(true);
                         CBLike.setEnabled(false);
-                        cambiarStatus("Guardada");
+                        cambiarStatus("Guardada", PkRecomendacion);
                         Toast.makeText(Recomendacion.getContext(), "Guardada", Toast.LENGTH_SHORT).show();
                     }
                     else {
                         CBLike.setEnabled(true);
-                        cambiarStatus("Gustada");
+                        cambiarStatus("Gustada", PkRecomendacion);
                     }
                 }
                 else {
                     CBFavoritos.setChecked(false);
                     CBLike.setEnabled(true);
-                    cambiarStatus("Gustada");
+                    cambiarStatus("Gustada", PkRecomendacion);
                     AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                     builder.setMessage("Has llegado a tu limite de espacio");
                     builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
@@ -280,7 +280,7 @@ public class DetallesPeticion extends Fragment {
         VolleySingleton.getInstancia(view.getContext()).agregarACola(checarFavoritos);
     }
 
-    public void cambiarStatus (final String Status)
+    public void cambiarStatus (final String Status, final String Recomendacion)
     {
         String url = IP + "WebService.asmx/setStatusRecomendacion";
         StringRequest status = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -300,7 +300,7 @@ public class DetallesPeticion extends Fragment {
                 Map<String, String> params = new HashMap<>();
                 params.put("secret", PreferencesConfig.getInstancia(view.getContext()).getFromSharedPrefs("Secret"));
                 params.put("status", Status);
-                params.put("recomendacion", PkRecomendacion);
+                params.put("recomendacion", Recomendacion);
                 return params;
             }
         };
@@ -324,15 +324,12 @@ public class DetallesPeticion extends Fragment {
                     adapter.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View vista) {
-                            Favoritos.dismiss();
+                            cambiarStatus("Guardada", PkRecomendacion);
                             try {
                                 JSONObject remplazar = ListaFavoritos.getJSONObject(RVFavoritos.getChildAdapterPosition(vista));
-                                String temp = PkRecomendacion;
-                                PkRecomendacion = remplazar.getString("recomendacion");
-                                cambiarStatus("Gustada");
-                                PkRecomendacion = temp;
-                                cambiarStatus("Guardada");
                                 CBFavoritos.setChecked(true);
+                                cambiarStatus("Gustada",remplazar.getString("recomendacion"));
+                                Favoritos.dismiss();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
