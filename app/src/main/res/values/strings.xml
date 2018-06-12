@@ -1,12 +1,37 @@
 <resources>
     <string name="app_name">OutfitHelp</string>
     <string name="title_activity_outfit_help">OutfitHelp</string>
+    <string name="CorreoElectronico">Correo Electronico</string>
+    <string name="Contraseña">Contraseña</string>
+    <string name="IniciarSesion">Iniciar Sesion</string>
+    <string name="SinCuenta">No tienes cuenta?</string>
+    <string name="Registrate">Registrate</string>
+    <string name="ConfirmarContraseña">Confirmar Contraseña</string>
+    <string name="Hombre">Hombre</string>
+    <string name="Mujer">Mujer</string>
+    <string name="AvisoSexo">No te preocupes, podrás cambiar después ;D</string>
+    <string name="Username">Username</string>
+    <string name="AceptarTyC">Acepto los </string>
+    <string name="TyC">Terminos y condiciones</string>
+    <string name="Registrarse">Registrarse</string>
+    <string name="CuentaExistente">Ya tienes cuenta?</string>
+    <string name="ContraseñaAntigua">Contraseña Antigua</string>
+    <string name="ContraseñaNueva">Contraseña Nueva</string>
+    <string name="Cancelar">Cancelar</string>
+    <string name="Aceptar">Aceptar</string>
+    <string name="EliminarPeticion">¿Desea eliminar la petición?</string>
+    <string name="Imagen">Imagen: </string>
+    <string name="TipoEvento">Tipo de Evento: </string>
+    <string name="Fecha">Fecha: </string>
+    <string name="Hora">Hora: </string>
+    <string name="Descripcion">Descripcion</string>
+    <string name="Agregar">Agregar</string>
+    <string name="PreguntaCerrarSesion">¿Seguro de que desea cerrar sesion?</string>
+    <string name="Sexo">Sexo:</string>
+    <string name="GuardarCambio">Guardar Cambio</string>
+    <string name="CambiarContraseña">Cambiar Contraseña</string>
+    <string name="IndiceFashion">Indice Fashion:</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="action_settings">Settings</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

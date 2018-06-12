@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:alpha="1"
-                android:text="OutfitHelp"
+                android:text="@string/app_name"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
                 android:textSize="70sp"
@@ -49,7 +49,7 @@
                 android:id="@+id/ETCorreoElectronico"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Correo Electronico"
+                android:hint="@string/CorreoElectronico"
                 android:textColor="@android:color/black"
                 android:textColorHint="@android:color/black"
                 android:alpha=".50"
@@ -59,7 +59,7 @@
                 android:id="@+id/ETContraseña"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Contraseña"
+                android:hint="@string/Contraseña"
                 android:textColor="@android:color/black"
                 android:textColorHint="@android:color/black"
                 android:alpha=".50"
@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:background="@color/colorPrimary"
-                android:text="Iniciar Sesion"
+                android:text="@string/IniciarSesion"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
                 android:textSize="25sp" />
@@ -94,7 +94,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="No tienes cuenta?"
+                    android:text="@string/SinCuenta"
                     android:textSize="20dp"
                     android:textColor="@android:color/black"
                     />
@@ -102,8 +102,8 @@
                     android:id="@+id/TVRegistrate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Registrate"
-                    android:textSize="25dp"
+                    android:text="@string/Registrate"
+                    android:textSize="25sp"
                     android:textColor="@android:color/holo_blue_dark"/>
             </LinearLayout>
         </LinearLayout>

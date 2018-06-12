@@ -18,7 +18,7 @@
         android:textSize="24sp"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
-        android:hint="Contraseña Antigua"
+        android:hint="@string/ContraseñaAntigua"
         android:inputType="textPassword"/>
     <TextView
         android:layout_width="wrap_content"
@@ -33,7 +33,7 @@
         android:textSize="24sp"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
-        android:hint="Contraseña Nueva"
+        android:hint="@string/ContraseñaNueva"
         android:inputType="textPassword"/>
     <EditText
         android:id="@+id/ETConfContraseñaNueva"
@@ -43,7 +43,7 @@
         android:textSize="24sp"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
-        android:hint="Confirmar Contraseña"
+        android:hint="@string/ConfirmarContraseña"
         android:inputType="textPassword"/>
     <TextView
         android:layout_width="wrap_content"
@@ -58,13 +58,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorAccent"
-            android:text="Cancelar"
+            android:text="@string/Cancelar"
             android:id="@+id/BTCancelarCambiarPass"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorAccent"
-            android:text="Aceptar"
+            android:text="@string/Aceptar"
             android:id="@+id/BTAceptarCambiarPass"/>
     </LinearLayout>
 

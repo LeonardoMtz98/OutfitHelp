@@ -93,7 +93,7 @@
             android:textColor="@android:color/white"
             android:gravity="center"
             android:layout_gravity="center"
-            android:text="Cancelar"
+            android:text="@string/Cancelar"
             android:id="@+id/BTCAncelarCR"/>
     </LinearLayout>
 </FrameLayout>

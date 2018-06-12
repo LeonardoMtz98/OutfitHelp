@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/colorAccent"
                 android:textColor="@android:color/white"
-                android:text="Cancelar"
+                android:text="@string/Cancelar"
                 android:id="@+id/BTCancelarR"/>
         </LinearLayout>
             <LinearLayout

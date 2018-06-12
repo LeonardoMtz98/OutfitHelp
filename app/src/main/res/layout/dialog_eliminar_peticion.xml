@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
-            android:text="¿Desea eliminar la petición?"/>
+            android:text="@string/EliminarPeticion"/>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -23,13 +23,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/colorAccent"
-                android:text="Si"
+                android:text="@string/Aceptar"
                 android:id="@+id/BTEliminarPeticionDE"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/colorAccent"
-                android:text="No"
+                android:text="@string/Cancelar"
                 android:id="@+id/BTCancelarEliminarDE"
                 />
         </LinearLayout>

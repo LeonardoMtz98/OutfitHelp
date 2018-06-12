@@ -22,7 +22,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="OutfitHelp"
+                android:text="@string/app_name"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:textSize="30sp"
@@ -34,7 +34,7 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:textStyle="bold"
                 android:textSize="24sp"
-                android:text="Username:"/>
+                android:text="@string/Username"/>
             <TextView
                 android:id="@+id/TVUsername"
                 android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:textStyle="bold"
                 android:textSize="24sp"
-                android:text="Correo:"/>
+                android:text="@string/CorreoElectronico"/>
             <TextView
                 android:id="@+id/TVCorreo"
                 android:layout_width="wrap_content"
@@ -67,7 +67,7 @@
                     android:textColor="@color/colorPrimaryDark"
                     android:textStyle="bold"
                     android:textSize="24sp"
-                    android:text="Sexo:"/>
+                    android:text="@string/Sexo"/>
                 <RadioButton
                     android:id="@+id/RBHombre"
                     android:layout_width="wrap_content"
@@ -77,7 +77,7 @@
                     android:textSize="24sp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:text="Hombre"/>
+                    android:text="@string/Hombre"/>
                 <RadioButton
                     android:id="@+id/RBMujer"
                     android:layout_width="wrap_content"
@@ -85,7 +85,7 @@
                     android:textColor="@android:color/black"
                     android:textStyle="bold"
                     android:textSize="24sp"
-                    android:text="Mujer"/>
+                    android:text="@string/Mujer"/>
             </RadioGroup>
             <Button
                 android:id="@+id/BTGuardarCambio"
@@ -98,7 +98,7 @@
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:layout_gravity="center"
-                android:text="Guardar Cambio"/>
+                android:text="@string/GuardarCambio"/>
             <Button
                 android:id="@+id/BTVerTyC"
                 android:layout_width="wrap_content"
@@ -110,7 +110,7 @@
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:layout_gravity="center"
-                android:text="Ver Terminos y Condiciones"/>
+                android:text="@string/TyC"/>
             <Button
                 android:id="@+id/BTCambiarPass"
                 android:layout_width="wrap_content"
@@ -122,7 +122,7 @@
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:layout_gravity="center"
-                android:text="Cambiar Contraseña"/>
+                android:text="@string/CambiarContraseña"/>
         </LinearLayout>
     </ScrollView>
 

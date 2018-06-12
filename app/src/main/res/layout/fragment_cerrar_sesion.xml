@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/colorAccent"
-            android:text="¿Seguro de que desea cerrar sesion?" />
+            android:text="@string/PreguntaCerrarSesion" />
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -27,14 +27,14 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/colorAccent"
                 android:layout_margin="20dp"
-                android:text="Si"/>
+                android:text="@string/Aceptar"/>
             <Button
                 android:id="@+id/BTNoCerrarSesion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/colorAccent"
                 android:layout_margin="20dp"
-                android:text="No"/>
+                android:text="@string/Cancelar"/>
         </LinearLayout>
 
         </LinearLayout>
