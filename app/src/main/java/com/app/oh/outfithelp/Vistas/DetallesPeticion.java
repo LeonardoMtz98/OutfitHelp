@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -55,6 +57,7 @@ public class DetallesPeticion extends Fragment {
     private CheckBox CBFavoritos;
     private JSONArray ListaFavoritos;
     private RecyclerView RVFavoritos;
+    private SwipeRefreshLayout refreshRecomendaciones;
 
     public DetallesPeticion() {
         // Required empty public constructor
@@ -100,6 +103,19 @@ public class DetallesPeticion extends Fragment {
             @Override
             public void onClick(View view) {
                 borrarRecomendaciones();
+            }
+        });
+        refreshRecomendaciones = view.findViewById(R.id.RefreshRecomendaciones);
+        refreshRecomendaciones.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                obtenerRecomendaciones();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshRecomendaciones.setRefreshing(false);
+                    }
+                },3000);
             }
         });
         return view;
@@ -174,7 +190,7 @@ public class DetallesPeticion extends Fragment {
                         CBFavoritos.setChecked(true);
                     }
                     else if(respuesta.equals("Gustada")) CBLike.setChecked(true);
-                    else Toast.makeText(view.getContext(), "Oops! "+ respuesta, Toast.LENGTH_SHORT).show();
+                    else if (!respuesta.equals("Nueva")) Toast.makeText(view.getContext(), "Oops! "+ respuesta, Toast.LENGTH_SHORT).show();
                 }
             }, new Response.ErrorListener() {
                 @Override

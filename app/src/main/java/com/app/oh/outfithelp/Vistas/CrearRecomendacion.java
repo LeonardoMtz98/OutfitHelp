@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -196,7 +197,6 @@ public class CrearRecomendacion extends Fragment {
         });
         dVer.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dVer.show();
-        //Picasso.get().load("http://104.210.40.93/img/pantalon1").into(IVPantalon);
     }
     public void enviar ()
     {
@@ -217,7 +217,11 @@ public class CrearRecomendacion extends Fragment {
             @Override
             public void onResponse(String response) {
                 String respuesta =  response.substring(67,response.length()-9);
-                if (!respuesta.equals("Exito")) Toast.makeText(view.getContext(), "Oops! "+ respuesta, Toast.LENGTH_SHORT).show();
+                if (!respuesta.contains("Exito")) Toast.makeText(view.getContext(), "Oops! "+ respuesta, Toast.LENGTH_SHORT).show();
+                else{
+                    getFragmentManager().beginTransaction().remove(CrearRecomendacion.this).commit();
+                    dVer.dismiss();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
