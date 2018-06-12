@@ -276,7 +276,7 @@ public class AgregarPeticion extends Fragment {
             for (int i = 0; i < ArrayAvatares.length(); i++)
             {
                 JSONObject ObjetoEventos = ArrayAvatares.getJSONObject(i);
-                opciones.add(i);
+                opciones.add(ObjetoEventos.getInt("PkAvatar"));
                 listaAvatares.add(ObjetoEventos.getString("Direccion"));
             }
             ArrayAdapter<CharSequence> spinnerAdapter = new ArrayAdapter(view.getContext(),
